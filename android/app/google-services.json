@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "367122305223",
+    "project_id": "speedy-36968",
+    "storage_bucket": "speedy-36968.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367122305223:android:6cd406cae10a2c479a2ee2",
+        "android_client_info": {
+          "package_name": "com.example.speedy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367122305223-5s5ik5erg8of9p2po539bc7pcc3kv1nm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDM_Ufp3tq9hqc9gSBozxwljqHKxx8Tk3I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367122305223-5s5ik5erg8of9p2po539bc7pcc3kv1nm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
