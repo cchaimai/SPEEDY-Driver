@@ -6,9 +6,9 @@ import 'package:location/location.dart';
 import 'package:speedy/work.dart';
 
 class DetailScreen extends StatefulWidget {
-  const DetailScreen({super.key, required this.userid});
+  const DetailScreen({super.key, required this.userid, required this.distance});
   final String userid;
-
+  final num distance;
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
@@ -117,7 +117,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         height: 30,
                       ),
                       Text(
-                        "ระยะห่างจากคุณ ${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.userid)['distance']} กม.",
+                        "ระยะห่างจากคุณ ${widget.distance.toStringAsFixed(2)} กม.",
                         style: GoogleFonts.prompt(
                           fontWeight: FontWeight.bold,
                           fontSize: 24,
@@ -205,8 +205,8 @@ class _DetailScreenState extends State<DetailScreen> {
                             children: [
                               Text(
                                 snapshot.data!.docs
-                                    .singleWhere((element) =>
-                                        element.id == widget.userid)['price']
+                                    .singleWhere((doc) =>
+                                        doc.id == widget.userid)['price']
                                     .toString(),
                                 style: GoogleFonts.prompt(
                                   fontWeight: FontWeight.w600,

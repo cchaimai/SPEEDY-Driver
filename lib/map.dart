@@ -63,7 +63,7 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('driver').snapshots(),
+          stream: FirebaseFirestore.instance.collection('dUsers').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(

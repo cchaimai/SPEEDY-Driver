@@ -18,7 +18,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
 
   Future<void> getUserData() async {
     DocumentReference userDocRef =
-        FirebaseFirestore.instance.collection('driver').doc(userId);
+        FirebaseFirestore.instance.collection('dUsers').doc(userId);
 
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 

@@ -84,6 +84,11 @@ class _RequestScreenState extends State<RequestScreen> {
                           MaterialPageRoute(
                             builder: (context) => DetailScreen(
                               userid: snapshot.data!.docs[index].id,
+                              distance: calculateDistance(
+                                  widget.lat,
+                                  widget.long,
+                                  snapshot.data!.docs[index]['latitude'],
+                                  snapshot.data!.docs[index]['longitude']),
                             ),
                           ));
                     },
@@ -109,12 +114,6 @@ class _RequestScreenState extends State<RequestScreen> {
         .doc(snapshot.data!.docs[index].id)
         .set({
       'STime': DateFormat('HH:mm').format(DateTime.now()),
-      'distance': calculateDistance(
-              widget.lat,
-              widget.long,
-              snapshot.data!.docs[index]['latitude'],
-              snapshot.data!.docs[index]['longitude'])
-          .toStringAsFixed(2)
     }, SetOptions(merge: true));
   }
 

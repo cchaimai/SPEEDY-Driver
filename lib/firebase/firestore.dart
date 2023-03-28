@@ -7,7 +7,7 @@ class DatabaseService {
   DatabaseService({this.uid});
   // reference for our collections
   final CollectionReference userCollection =
-      FirebaseFirestore.instance.collection("driver");
+      FirebaseFirestore.instance.collection("dUsers");
 
   final CollectionReference bankCollection =
       FirebaseFirestore.instance.collection("banks");

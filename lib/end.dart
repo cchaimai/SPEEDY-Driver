@@ -203,7 +203,7 @@ class _EndScreenState extends State<EndScreen> {
 
   Future<void> increaseScore(String userId, int amount) async {
     final DocumentReference<Map<String, dynamic>> userRef =
-        firestore.collection('driver').doc(userId);
+        firestore.collection('dUsers').doc(userId);
     try {
       await userRef.update({'wallet': FieldValue.increment(amount)});
     } catch (e) {

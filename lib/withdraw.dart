@@ -207,7 +207,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
 
   Future<void> increaseScore(String userId, int points) async {
     final DocumentReference<Map<String, dynamic>> userRef =
-        firestore.collection('driver').doc(userId);
+        firestore.collection('dUsers').doc(userId);
     try {
       await userRef.update({'wallet': FieldValue.increment(-points)});
     } catch (e) {
