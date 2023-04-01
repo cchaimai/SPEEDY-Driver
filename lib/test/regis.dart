@@ -77,23 +77,23 @@ class _regisScreenState extends State<regisScreen> {
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 onPressed: () async {
-                                  fromKey.currentState!.save();
-                                  try {
-                                    await authService
-                                        .registerUserWithEmailandPassword(
-                                            profile.email, profile.password)
-                                        .then((value) {
-                                      fromKey.currentState!.reset();
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const homeScreen()));
-                                    });
-                                  } on FirebaseAuthException catch (e) {
-                                    // ignore: avoid_print
-                                    print(e.message);
-                                  }
+                                  // fromKey.currentState!.save();
+                                  // try {
+                                  //   await authService
+                                  //       .registerUserWithEmailandPassword(
+                                  //           profile.email, profile.password)
+                                  //       .then((value) {
+                                  //     fromKey.currentState!.reset();
+                                  //     Navigator.pushReplacement(
+                                  //         context,
+                                  //         MaterialPageRoute(
+                                  //             builder: (context) =>
+                                  //                 const homeScreen()));
+                                  //   });
+                                  // } on FirebaseAuthException catch (e) {
+                                  //   // ignore: avoid_print
+                                  //   print(e.message);
+                                  // }
                                 },
                               ),
                             )

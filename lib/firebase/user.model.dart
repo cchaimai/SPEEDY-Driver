@@ -53,7 +53,7 @@ class UserModel {
     return {
       "firstName": firstName,
       "lastName": lastName,
-      "profilePic": dProfilePic,
+      "dProfilePic": dProfilePic,
       "uid": uid,
       "phoneNumber": phoneNumber,
       "createAt": createAt,

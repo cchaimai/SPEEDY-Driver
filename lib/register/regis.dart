@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/animation/animation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:speedy/test/proflie.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase/auth.dart';
@@ -10,7 +12,7 @@ import 'package:speedy/test/home.dart';
 import 'package:speedy/widgets/widgets.dart';
 
 class registerScreen extends StatefulWidget {
-  const registerScreen({Key? key}) : super(key: key);
+  const registerScreen({super.key, required User user});
 
   @override
   State<registerScreen> createState() => _registerScreenState();
@@ -290,21 +292,36 @@ class _registerScreenState extends State<registerScreen> {
                         print(email);
                         print(password);
                         try {
-                          await authService.registerUserWithEmailandPassword(
-                              email, password);
-                          formKey.currentState!.reset();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const informationScreen()),
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: email,
+                            password: password,
                           );
+                          UserCredential userCredential = await FirebaseAuth
+                              .instance
+                              .signInWithEmailAndPassword(
+                                  email: email, password: password);
+                          User user = userCredential.user!;
+                          // ignore: use_build_context_synchronously
+                          if (FirebaseAuth.instance.currentUser != null) {
+                            // ignore: use_build_context_synchronously
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    informationScreen(user: user),
+                              ),
+                            );
+                          }
+
+                          formKey.currentState!.reset();
                         } on FirebaseAuthException catch (e) {
                           // Handle the FirebaseAuthException.
-                          print('Failed to register: ${e.message}');
+                          Fluttertoast.showToast(
+                              msg: 'Failed to register: ${e.message}');
                         } catch (e) {
                           // Handle other exceptions.
-                          print('Failed to register: $e');
+                          Fluttertoast.showToast(msg: 'Failed to register: $e');
                         }
                       }
                     },

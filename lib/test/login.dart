@@ -76,23 +76,23 @@ class _loginScreenState extends State<loginScreen> {
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 onPressed: () async {
-                                  fromKey.currentState!.save();
-                                  try {
-                                    await authService
-                                        .loginWithUserNameandPassword(
-                                            profile.email, profile.password)
-                                        .then((value) {
-                                      fromKey.currentState!.reset();
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const MapScreen()));
-                                    });
-                                  } on FirebaseAuthException catch (e) {
-                                    // ignore: avoid_print
-                                    print(e.message);
-                                  }
+                                  // fromKey.currentState!.save();
+                                  // try {
+                                  //   await authService
+                                  //       .loginWithUserNameandPassword(
+                                  //           profile.email, profile.password)
+                                  //       .then((value) {
+                                  //     fromKey.currentState!.reset();
+                                  //     Navigator.pushReplacement(
+                                  //         context,
+                                  //         MaterialPageRoute(
+                                  //             builder: (context) =>
+                                  //                 const MapScreen()));
+                                  //   });
+                                  // } on FirebaseAuthException catch (e) {
+                                  //   // ignore: avoid_print
+                                  //   print(e.message);
+                                  // }
                                 },
                               ),
                             )

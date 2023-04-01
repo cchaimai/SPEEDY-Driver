@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy/register/info.id.card.dart';
+import 'package:speedy/register/info.card.id.dart';
 import 'package:speedy/register/regis.dart';
 
 import '../firebase/auth.dart';
@@ -12,7 +13,9 @@ import '../firebase/user.model.dart';
 import '../widgets/widgets.dart';
 
 class informationScreen extends StatefulWidget {
-  const informationScreen({super.key});
+  const informationScreen({Key? key, required this.user}) : super(key: key);
+
+  final User user;
 
   @override
   State<informationScreen> createState() => _informationScreenState();
@@ -22,6 +25,7 @@ class _informationScreenState extends State<informationScreen> {
   String? _selectedBrand;
   String? _selectedProvince;
   String? _selectedYear;
+  String? _selectedColors;
   bool _isChecked = false;
   File? image;
 
@@ -41,7 +45,7 @@ class _informationScreenState extends State<informationScreen> {
     carColorController.dispose();
   }
 
-  final List<String> years = [
+  static const List<String> years = [
     '2566',
     '2565',
     '2564',
@@ -54,6 +58,18 @@ class _informationScreenState extends State<informationScreen> {
     '2557',
     '2556',
     '2555',
+  ];
+
+  static const List<String> carColors = [
+    'White',
+    'Black',
+    'Silver',
+    'Gray',
+    'Red',
+    'Blue',
+    'Brown',
+    'Beige',
+    'Green',
   ];
 
   static const List<String> brands = [
@@ -162,11 +178,36 @@ class _informationScreenState extends State<informationScreen> {
   @override
   Widget build(BuildContext context) {
     final isLoading = Provider.of<AuthService>(context, listen: true).isLoading;
+    User user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              nextScreenReplace(context, const registerScreen());
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Confirm'),
+                  content: const Text('Are you sure you want to go back?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  registerScreen(user: user))),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              ).then((value) {
+                if (value == 'OK') {
+                  Navigator.pop(context);
+                }
+              });
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -573,17 +614,14 @@ class _informationScreenState extends State<informationScreen> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
-                              TextFormField(
-                                controller: carColorController,
-                                cursorColor: Colors.green,
+                              const SizedBox(height: 10),
+                              DropdownButtonFormField<String>(
                                 decoration: InputDecoration(
                                   labelText: 'Colors',
                                   labelStyle: GoogleFonts.prompt(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                  ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey),
                                   border: const OutlineInputBorder(),
                                   focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey),
@@ -598,6 +636,20 @@ class _informationScreenState extends State<informationScreen> {
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
+                                value: _selectedColors,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    _selectedColors = newValue;
+                                  });
+                                  print(_selectedColors);
+                                },
+                                items: carColors.map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
                               ),
                               const SizedBox(height: 20),
                               Row(
@@ -676,9 +728,8 @@ class _informationScreenState extends State<informationScreen> {
                                     ),
                                   ),
                                   enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
                                     borderSide: BorderSide(color: Colors.grey),
                                   ),
                                 ),
@@ -755,6 +806,7 @@ class _informationScreenState extends State<informationScreen> {
 
   void storeData() async {
     final ap = Provider.of<AuthService>(context, listen: false);
+    User user = FirebaseAuth.instance.currentUser!;
     List<String> groups = [];
     UserModel userModel = UserModel(
       firstName: firstNameController.text.trim(),
@@ -777,10 +829,13 @@ class _informationScreenState extends State<informationScreen> {
         userModel: userModel,
         dProfilePic: image!,
         onSuccess: () {
-          ap.saveUserDataToSP().then((value) => ap.setSignIn().then((value) =>
-              Navigator.pushAndRemoveUntil(
+          ap.saveUserDataToSP().then((value) =>
+              ap.setSignIn().then((value) => Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const idcardScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => cardIDScreen(
+                            user: user,
+                          )),
                   (route) => false)));
         },
         groups: groups.toList(),

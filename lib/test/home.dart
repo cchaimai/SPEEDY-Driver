@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class _homeScreenState extends State<homeScreen> {
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthService>(context);
+    User user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -127,7 +129,11 @@ class _homeScreenState extends State<homeScreen> {
                         ),
                       ),
                       onPressed: () {
-                        nextScreenReplace(context, const registerScreen());
+                        nextScreenReplace(
+                            context,
+                            registerScreen(
+                              user: user,
+                            ));
                       },
                     ),
                   ],

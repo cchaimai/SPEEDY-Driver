@@ -17,11 +17,10 @@ class AuthService extends ChangeNotifier {
   bool get isSignedIn => _isSignedIn;
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-  String? _uid;
-  String get uid => _uid!;
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
 
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -39,35 +38,29 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future loginWithUserNameandPassword(String email, String password) async {
-    try {
-      User user = (await _firebaseAuth.signInWithEmailAndPassword(
-              email: email, password: password))
-          .user!;
+  // Future loginWithUserNameandPassword(String email, String password) async {
+  //   try {
+  //     User user = (await _firebaseAuth.signInWithEmailAndPassword(
+  //             email: email, password: password))
+  //         .user!;
 
-      // ignore: unnecessary_null_comparison
-      if (user != null) {
-        _uid = user.uid;
-        return true;
-      }
-    } on FirebaseAuthException catch (e) {
-      return e.message;
-    }
-  }
+  //     // ignore: unnecessary_null_comparison
+  //     if (user != null) {
+  //       return true;
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     return e.message;
+  //   }
+  // }
 
-  Future registerUserWithEmailandPassword(String email, String password) async {
-    try {
-      User user = (await _firebaseAuth.createUserWithEmailAndPassword(
-              email: email, password: password))
-          .user!;
-
-      if (user != null) {
-        _uid = user.uid;
-      }
-    } on FirebaseAuthException catch (e) {
-      return e.message;
-    }
-  }
+  // Future registerUserWithEmailandPassword(String email, String password) async {
+  //   try {
+  //     await _firebaseAuth.createUserWithEmailAndPassword(
+  //         email: email, password: password);
+  //   } on FirebaseAuthException catch (e) {
+  //     return e.message;
+  //   }
+  // }
 
   // Future signOut() async {
   //   try {
@@ -124,20 +117,19 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
     try {
       //uploading image to firebase storage
-      await storeFileDataToStorage("dProfilePic/$_uid", dProfilePic)
+      await storeFileDataToStorage("dProfilePic/$userId", dProfilePic)
           .then((value) {
         userModel.dProfilePic = value;
         userModel.groups = groups;
         userModel.createAt = DateTime.now().millisecondsSinceEpoch.toString();
         if (_firebaseAuth.currentUser != null) {
-          userModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
           userModel.uid = _firebaseAuth.currentUser!.uid;
         }
       });
       _userModel = userModel;
       await _firebaseFirestore
           .collection("dUsers")
-          .doc(_uid)
+          .doc(userId)
           .set(userModel.toMap())
           .then((value) {
         onSuccess();
