@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -155,6 +156,7 @@ class _cardIDScreenState extends State<cardIDScreen> {
                             TextFormField(
                               cursorColor: Colors.green,
                               controller: cardIDController,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: '1-234567890-12-3',
                                 labelStyle: GoogleFonts.prompt(
@@ -195,6 +197,7 @@ class _cardIDScreenState extends State<cardIDScreen> {
                             TextFormField(
                               cursorColor: Colors.green,
                               controller: drivingCardController,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: '1-234567890-12-3',
                                 labelStyle: GoogleFonts.prompt(
@@ -228,16 +231,14 @@ class _cardIDScreenState extends State<cardIDScreen> {
                       ),
                       const SizedBox(height: 50),
                       InkWell(
-                        onTap: () {
-                          nextScreenReplace(context, const documentScreen());
-                        },
+                        onTap: () => saveCardID(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
                               alignment: Alignment.center,
-                              height: 55,
-                              width: 150,
+                              height: 50,
+                              width: 180,
                               decoration: BoxDecoration(
                                 color: Colors.green,
                                 borderRadius: BorderRadius.circular(30),
@@ -277,5 +278,41 @@ class _cardIDScreenState extends State<cardIDScreen> {
               ),
       ),
     );
+  }
+
+  void saveCardID() async {
+    String cardID = cardIDController.text.trim();
+    String drivingCard = drivingCardController.text.trim();
+    User user = FirebaseAuth.instance.currentUser!;
+
+    await FirebaseFirestore.instance
+        .collection('dUsers')
+        .doc(user.uid)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        // เจอเอกสารที่ค้นหา ทำการอัปเดตข้อมูลได้
+        FirebaseFirestore.instance.collection('dUsers').doc(user.uid).update({
+          'cardID': cardID,
+          'drivingCard': drivingCard,
+        }).then((value) => Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const documentScreen(),
+            ),
+            (route) => false));
+      } else {
+        // ไม่เจอเอกสารที่ค้นหา สร้างเอกสารใหม่
+        FirebaseFirestore.instance.collection('dUsers').doc(user.uid).set({
+          'cardID': cardID,
+          'drivingCard': drivingCard,
+        }).then((value) => Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const documentScreen(),
+            ),
+            (route) => false));
+      }
+    });
   }
 }

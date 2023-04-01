@@ -20,7 +20,6 @@ class AuthService extends ChangeNotifier {
   UserModel? _userModel;
   UserModel get userModel => _userModel!;
 
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
@@ -70,66 +69,32 @@ class AuthService extends ChangeNotifier {
   //   }
   // }
 
-  // void saveUserDataToFirebase({
-  //   required BuildContext context,
-  //   required UserModel userModel,
-  //   required File dProfilePic,
-  //   required List<String> groups, // รับข้อมูล cards เป็น List<String>
-  //   required Function onSuccess,
-  // }) async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //   try {
-  //     //uploading image to firebase storage
-  //     await storeFileDataToStorage("dProfilePic/$_uid", dProfilePic)
-  //         .then((value) {
-  //       userModel.dProfilePic = value;
-  //       userModel.groups = groups;
-  //       userModel.createAt = DateTime.now().millisecondsSinceEpoch.toString();
-  //       userModel.phoneNumber = _firebaseAuth.currentUser!.phoneNumber!;
-  //       userModel.uid = _firebaseAuth.currentUser!.uid;
-  //     });
-  //     _userModel = userModel;
-  //     await _firebaseFirestore
-  //         .collection("dUsers")
-  //         .doc(_uid)
-  //         .set(userModel.toMap())
-  //         .then((value) {
-  //       onSuccess();
-  //       _isLoading = false;
-  //       notifyListeners();
-  //     });
-  //   } on FirebaseAuthException catch (e) {
-  //     print(e);
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
-
   void saveUserDataToFirebase({
     required BuildContext context,
     required UserModel userModel,
-    required File dProfilePic,
-    required List<String> groups,
+    //required File dProfilePic,
+    required List<String> groups, // รับข้อมูล cards เป็น List<String>
     required Function onSuccess,
   }) async {
     _isLoading = true;
     notifyListeners();
+    User user = FirebaseAuth.instance.currentUser!;
+    String _uid = user.uid;
     try {
       //uploading image to firebase storage
-      await storeFileDataToStorage("dProfilePic/$userId", dProfilePic)
-          .then((value) {
-        userModel.dProfilePic = value;
+      // await storeFileDataToStorage("dProfilePic/$_uid", dProfilePic)
+      //     .then((value) {
+      //   userModel.dProfilePic = value;
         userModel.groups = groups;
         userModel.createAt = DateTime.now().millisecondsSinceEpoch.toString();
-        if (_firebaseAuth.currentUser != null) {
-          userModel.uid = _firebaseAuth.currentUser!.uid;
-        }
-      });
+        userModel.email = _firebaseAuth.currentUser!.email!;
+
+       print(_uid);
+      //});
       _userModel = userModel;
       await _firebaseFirestore
           .collection("dUsers")
-          .doc(userId)
+          .doc(_uid)
           .set(userModel.toMap())
           .then((value) {
         onSuccess();
@@ -156,17 +121,4 @@ class AuthService extends ChangeNotifier {
     await s.setString("user_model", jsonEncode(userModel.toMap()));
   }
 
-  Future<File?> pickImage(BuildContext context) async {
-    File? image;
-    try {
-      final pickedImage =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (pickedImage != null) {
-        image = File(pickedImage.path);
-      }
-    } catch (e) {
-      print(e);
-    }
-    return image;
-  }
 }

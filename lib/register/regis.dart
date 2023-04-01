@@ -127,7 +127,7 @@ class _registerScreenState extends State<registerScreen> {
                     ),
                     child: SizedBox(
                       width: 350,
-                      height: 380,
+                      height: 360,
                       child: Padding(
                         padding: const EdgeInsets.all(20),
                         child: Column(
@@ -161,6 +161,7 @@ class _registerScreenState extends State<registerScreen> {
                             ),
                             const SizedBox(height: 5),
                             TextFormField(
+                              controller: emailController,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               cursorColor: Colors.green,
@@ -175,6 +176,7 @@ class _registerScreenState extends State<registerScreen> {
                               ),
                               decoration: InputDecoration(
                                 labelText: 'example@gmail.com',
+                                
                                 labelStyle: GoogleFonts.prompt(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w300,
@@ -226,6 +228,7 @@ class _registerScreenState extends State<registerScreen> {
                             ),
                             const SizedBox(height: 5),
                             TextFormField(
+                              controller: passwordController,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               onSaved: (value) {
@@ -286,52 +289,14 @@ class _registerScreenState extends State<registerScreen> {
                   ),
                   const SizedBox(height: 20),
                   InkWell(
-                    onTap: () async {
-                      if (formKey.currentState!.validate()) {
-                        formKey.currentState!.save();
-                        print(email);
-                        print(password);
-                        try {
-                          await FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                            email: email,
-                            password: password,
-                          );
-                          UserCredential userCredential = await FirebaseAuth
-                              .instance
-                              .signInWithEmailAndPassword(
-                                  email: email, password: password);
-                          User user = userCredential.user!;
-                          // ignore: use_build_context_synchronously
-                          if (FirebaseAuth.instance.currentUser != null) {
-                            // ignore: use_build_context_synchronously
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    informationScreen(user: user),
-                              ),
-                            );
-                          }
-
-                          formKey.currentState!.reset();
-                        } on FirebaseAuthException catch (e) {
-                          // Handle the FirebaseAuthException.
-                          Fluttertoast.showToast(
-                              msg: 'Failed to register: ${e.message}');
-                        } catch (e) {
-                          // Handle other exceptions.
-                          Fluttertoast.showToast(msg: 'Failed to register: $e');
-                        }
-                      }
-                    },
+                    onTap: () => saveUsers(),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          height: 55,
-                          width: 150,
+                          height: 50,
+                          width: 180,
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(30),
@@ -364,7 +329,7 @@ class _registerScreenState extends State<registerScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 30),
                   Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -425,5 +390,44 @@ class _registerScreenState extends State<registerScreen> {
         ),
       ),
     );
+  }
+
+  void saveUsers() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      try {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+        User user = userCredential.user!;
+        await FirebaseFirestore.instance.collection('dUsers').doc(user.uid).set({
+          'email': email,
+        });
+        // ignore: use_build_context_synchronously
+        if (FirebaseAuth.instance.currentUser != null) {
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => informationScreen(user: user),
+            ),
+          );
+        }
+
+        formKey.currentState!.reset();
+      } on FirebaseAuthException catch (e) {
+        // Handle the FirebaseAuthException.
+        Fluttertoast.showToast(msg: 'Failed to register: ${e.message}');
+      } catch (e) {
+        // Handle other exceptions.
+        Fluttertoast.showToast(msg: 'Failed to register: $e');
+      }
+    }
   }
 }

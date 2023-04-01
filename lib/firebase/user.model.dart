@@ -3,7 +3,9 @@ class UserModel {
   String lastName;
   String dProfilePic;
   String uid;
+  String role;
   String phoneNumber;
+  String email;
   String carBrand;
   String carID;
   String carYear;
@@ -18,15 +20,18 @@ class UserModel {
     required this.lastName,
     required this.dProfilePic,
     required this.uid,
+    required this.role,
     required this.phoneNumber,
+    required this.email,
     required this.carID,
     required this.carColor,
     required this.carYear,
     required this.provinces,
     required this.carBrand,
     required this.createAt,
-    this.wallet = 0,
     required this.groups,
+    this.wallet = 0,
+    
   });
 
   //from map
@@ -36,7 +41,9 @@ class UserModel {
       lastName: map['lastName'] ?? '',
       dProfilePic: map['dProfilePic'] ?? '',
       uid: map['uid'] ?? '',
+      role: map['role'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
+      email: map['email'] ?? '',
       carID: map['carID'] ?? '',
       carColor: map['carColor'] ?? '',
       createAt: map['createAt'] ?? '',
@@ -55,7 +62,9 @@ class UserModel {
       "lastName": lastName,
       "dProfilePic": dProfilePic,
       "uid": uid,
+      "role": role,
       "phoneNumber": phoneNumber,
+      "email": email,
       "createAt": createAt,
       "carID": carID,
       "carColor": carColor,

@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:provider/provider.dart';
 import 'package:speedy/register/info.card.id.dart';
 import 'package:speedy/register/verification.dart';
@@ -18,6 +23,11 @@ class documentScreen extends StatefulWidget {
 }
 
 class _documentScreenState extends State<documentScreen> {
+
+  final _storage = FirebaseStorage.instance;
+  List<File> _imageFiles = [];
+
+
   @override
   Widget build(BuildContext context) {
     final isLoading = Provider.of<AuthService>(context, listen: true).isLoading;
@@ -142,7 +152,9 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+ 
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -190,7 +202,10 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                         
+                                
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -231,7 +246,9 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                         
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -272,7 +289,9 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                              
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -313,7 +332,9 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                             
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -354,7 +375,9 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                        
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -395,7 +418,9 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 5),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                         
+                              },
                               child: Container(
                                 alignment: Alignment.center,
                                 height: 45,
@@ -424,10 +449,7 @@ class _documentScreenState extends State<documentScreen> {
                             ),
                             const SizedBox(height: 50),
                             InkWell(
-                              onTap: () {
-                                nextScreenReplace(
-                                    context, const verificationScreen());
-                              },
+                              onTap: () {},
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

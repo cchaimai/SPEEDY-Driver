@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:speedy/register/info.card.id.dart';
 import 'package:speedy/register/regis.dart';
@@ -312,40 +313,40 @@ class _informationScreenState extends State<informationScreen> {
                                 ],
                               ),
                               const SizedBox(height: 30),
-                              Column(
-                                children: [
-                                  InkWell(
-                                    onTap: () => selectImage(),
-                                    child: image == null
-                                        ? const CircleAvatar(
-                                            backgroundColor: Colors.grey,
-                                            radius: 50,
-                                            child: Icon(
-                                              Icons.account_circle,
-                                              size: 50,
-                                              color: Colors.white,
-                                            ),
-                                          )
-                                        : CircleAvatar(
-                                            backgroundImage: FileImage(image!),
-                                            radius: 50,
-                                          ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  InkWell(
-                                    onTap: () => selectImage(),
-                                    child: Text(
-                                      'เพิ่มรูปภาพ',
-                                      style: GoogleFonts.prompt(
-                                        color: Colors.grey.shade600,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
+                              // Column(
+                              //   children: [
+                              //     InkWell(
+                              //       onTap: () => selectImage(),
+                              //       child: image == null
+                              //           ? const CircleAvatar(
+                              //               backgroundColor: Colors.grey,
+                              //               radius: 50,
+                              //               child: Icon(
+                              //                 Icons.account_circle,
+                              //                 size: 50,
+                              //                 color: Colors.white,
+                              //               ),
+                              //             )
+                              //           : CircleAvatar(
+                              //               backgroundImage: FileImage(image!),
+                              //               radius: 50,
+                              //             ),
+                              //     ),
+                              //     const SizedBox(height: 5),
+                              //     InkWell(
+                              //       onTap: () => selectImage(),
+                              //       child: Text(
+                              //         'เพิ่มรูปภาพ',
+                              //         style: GoogleFonts.prompt(
+                              //           color: Colors.grey.shade600,
+                              //           fontSize: 12,
+                              //           fontWeight: FontWeight.w400,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              // const SizedBox(height: 10),
                               Row(
                                 children: [
                                   Text(
@@ -760,8 +761,8 @@ class _informationScreenState extends State<informationScreen> {
                           children: [
                             Container(
                               alignment: Alignment.center,
-                              height: 55,
-                              width: 150,
+                              height: 50,
+                              width: 180,
                               decoration: BoxDecoration(
                                 color: Colors.green,
                                 borderRadius: BorderRadius.circular(30),
@@ -817,29 +818,28 @@ class _informationScreenState extends State<informationScreen> {
       carBrand: _selectedBrand.toString(),
       carYear: _selectedYear.toString(),
       provinces: _selectedProvince.toString(),
+      email: "",
       dProfilePic: "",
       uid: "",
       createAt: "",
       wallet: 0,
       groups: [],
+      role: "user"
     );
-    if (image != null) {
-      ap.saveUserDataToFirebase(
-        context: context,
-        userModel: userModel,
-        dProfilePic: image!,
-        onSuccess: () {
-          ap.saveUserDataToSP().then((value) =>
-              ap.setSignIn().then((value) => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => cardIDScreen(
-                            user: user,
-                          )),
-                  (route) => false)));
-        },
-        groups: groups.toList(),
-      );
-    }
+    ap.saveUserDataToFirebase(
+      context: context,
+      userModel: userModel,
+     //dProfilePic: image!,
+      onSuccess: () {
+        ap.saveUserDataToSP().then((value) => Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => cardIDScreen(
+                      user: user,
+                    )),
+            (route) => false));
+      },
+      groups: groups.toList(),
+    );
   }
 }
