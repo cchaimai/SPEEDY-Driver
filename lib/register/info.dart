@@ -819,17 +819,13 @@ class _informationScreenState extends State<informationScreen> {
       carYear: _selectedYear.toString(),
       provinces: _selectedProvince.toString(),
       email: "",
-      dProfilePic: "",
-      uid: "",
-      createAt: "",
       wallet: 0,
       groups: [],
-      role: "user"
+      role: "user_driver"
     );
     ap.saveUserDataToFirebase(
       context: context,
       userModel: userModel,
-     //dProfilePic: image!,
       onSuccess: () {
         ap.saveUserDataToSP().then((value) => Navigator.pushAndRemoveUntil(
             context,

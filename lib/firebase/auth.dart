@@ -86,7 +86,6 @@ class AuthService extends ChangeNotifier {
       //     .then((value) {
       //   userModel.dProfilePic = value;
         userModel.groups = groups;
-        userModel.createAt = DateTime.now().millisecondsSinceEpoch.toString();
         userModel.email = _firebaseAuth.currentUser!.email!;
 
        print(_uid);

@@ -16,7 +16,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+  User userId = FirebaseAuth.instance.currentUser!;
   final Completer<GoogleMapController> _controller = Completer();
 
   List<LatLng> polylineCoordinates = [];

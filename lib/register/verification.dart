@@ -4,7 +4,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy/register/documents.dart';
+import 'package:speedy/register/card.driver.dart';
 import 'package:speedy/test/home.dart';
 
 import '../firebase/auth.dart';
@@ -26,7 +26,7 @@ class _verificationScreenState extends State<verificationScreen> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              nextScreenReplace(context, documentScreen());
+              nextScreenReplace(context, cardDriverScreen());
             },
             icon: const Icon(
               Icons.arrow_back,

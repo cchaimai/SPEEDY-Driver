@@ -1,8 +1,6 @@
 class UserModel {
   String firstName;
   String lastName;
-  String dProfilePic;
-  String uid;
   String role;
   String phoneNumber;
   String email;
@@ -11,15 +9,12 @@ class UserModel {
   String carYear;
   String carColor;
   String provinces;
-  String createAt;
   num wallet;
   List<String> groups;
 
   UserModel({
     required this.firstName,
     required this.lastName,
-    required this.dProfilePic,
-    required this.uid,
     required this.role,
     required this.phoneNumber,
     required this.email,
@@ -28,10 +23,8 @@ class UserModel {
     required this.carYear,
     required this.provinces,
     required this.carBrand,
-    required this.createAt,
     required this.groups,
     this.wallet = 0,
-    
   });
 
   //from map
@@ -39,14 +32,11 @@ class UserModel {
     return UserModel(
       firstName: map['fisrtName'] ?? '',
       lastName: map['lastName'] ?? '',
-      dProfilePic: map['dProfilePic'] ?? '',
-      uid: map['uid'] ?? '',
       role: map['role'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
       email: map['email'] ?? '',
       carID: map['carID'] ?? '',
       carColor: map['carColor'] ?? '',
-      createAt: map['createAt'] ?? '',
       provinces: map['provinces'] ?? '',
       carBrand: map['carBrand'] ?? '',
       carYear: map['carYear'] ?? '',
@@ -60,12 +50,9 @@ class UserModel {
     return {
       "firstName": firstName,
       "lastName": lastName,
-      "dProfilePic": dProfilePic,
-      "uid": uid,
       "role": role,
       "phoneNumber": phoneNumber,
       "email": email,
-      "createAt": createAt,
       "carID": carID,
       "carColor": carColor,
       "carYear": carYear,

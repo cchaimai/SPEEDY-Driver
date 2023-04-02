@@ -50,18 +50,8 @@ class _homeScreenState extends State<homeScreen> {
                 InkWell(
                   onTap: () {
                     ap.isSignedIn == true
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MapScreen(),
-                            ),
-                          )
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const loginScreen(),
-                            ),
-                          );
+                        ? nextScreenReplace(context, const MapScreen())
+                        : nextScreenReplace(context, const loginScreen());
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

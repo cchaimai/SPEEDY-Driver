@@ -5,7 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:speedy/register/documents.dart';
+import 'package:speedy/register/card.driver.dart';
 import 'package:speedy/register/info.dart';
 
 import '../firebase/auth.dart';
@@ -20,7 +20,7 @@ class cardIDScreen extends StatefulWidget {
 
 class _cardIDScreenState extends State<cardIDScreen> {
   final cardIDController = TextEditingController();
-  final drivingCardController = TextEditingController();
+  final driverCardController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -196,7 +196,7 @@ class _cardIDScreenState extends State<cardIDScreen> {
                             const SizedBox(height: 5),
                             TextFormField(
                               cursorColor: Colors.green,
-                              controller: drivingCardController,
+                              controller: driverCardController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: '1-234567890-12-3',
@@ -282,7 +282,7 @@ class _cardIDScreenState extends State<cardIDScreen> {
 
   void saveCardID() async {
     String cardID = cardIDController.text.trim();
-    String drivingCard = drivingCardController.text.trim();
+    String driverCard = driverCardController.text.trim();
     User user = FirebaseAuth.instance.currentUser!;
 
     await FirebaseFirestore.instance
@@ -294,22 +294,22 @@ class _cardIDScreenState extends State<cardIDScreen> {
         // เจอเอกสารที่ค้นหา ทำการอัปเดตข้อมูลได้
         FirebaseFirestore.instance.collection('dUsers').doc(user.uid).update({
           'cardID': cardID,
-          'drivingCard': drivingCard,
+          'driverCard': driverCard,
         }).then((value) => Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => const documentScreen(),
+              builder: (context) => const cardDriverScreen(),
             ),
             (route) => false));
       } else {
         // ไม่เจอเอกสารที่ค้นหา สร้างเอกสารใหม่
         FirebaseFirestore.instance.collection('dUsers').doc(user.uid).set({
           'cardID': cardID,
-          'drivingCard': drivingCard,
+          'driverCard': driverCard,
         }).then((value) => Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => const documentScreen(),
+              builder: (context) => const cardDriverScreen(),
             ),
             (route) => false));
       }
