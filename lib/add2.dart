@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:speedy/add.dart';
-import 'package:speedy/firebase/firestore.dart';
 import 'package:speedy/select.dart';
 
 class Add2Screen extends StatefulWidget {
@@ -22,7 +22,7 @@ class Add2Screen extends StatefulWidget {
 
 class _Add2ScreenState extends State<Add2Screen> {
   final fromKey = GlobalKey<FormState>();
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   String name = '';
   String account = '';
 
@@ -146,24 +146,19 @@ class _Add2ScreenState extends State<Add2Screen> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: ElevatedButton(
-                          onPressed: () async {
+                          onPressed: () {
                             if (fromKey.currentState!.validate()) {
                               fromKey.currentState!.save();
-                              try {
-                                await DatabaseService(uid: userId)
-                                    .createBank(name, account, widget.image)
-                                    .then((value) {
-                                  fromKey.currentState!.reset();
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SelectScreen()));
-                                });
-                              } catch (e) {
-                                // ignore: avoid_print
-                                print(e);
-                              }
+                              createBank(name, account, widget.image)
+                                  .then((value) {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SelectScreen()));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
+                              });
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -190,5 +185,30 @@ class _Add2ScreenState extends State<Add2Screen> {
         ),
       ),
     );
+  }
+
+  final snackBar = SnackBar(
+    closeIconColor: Colors.white,
+    showCloseIcon: true,
+    content: Text(
+      'เพิ่มบัญชีเสร็จสิ้น',
+      style: GoogleFonts.prompt(),
+    ),
+    backgroundColor: const Color(0xff3BB54A),
+    duration: const Duration(seconds: 3),
+  );
+
+  Future<void> createBank(String name, String account, String image) async {
+    DocumentReference bankDocumentReference =
+        await FirebaseFirestore.instance.collection("banks").add({
+      "owner": userId,
+      "name": name,
+      "account": account,
+      "image": image,
+    });
+
+    await bankDocumentReference.update({
+      "id": bankDocumentReference.id,
+    });
   }
 }

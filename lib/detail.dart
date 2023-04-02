@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:speedy/work.dart';
 
 class DetailScreen extends StatefulWidget {
-  const DetailScreen({super.key, required this.userid, required this.distance});
-  final String userid;
+  const DetailScreen({super.key, required this.workID, required this.distance});
+  final String workID;
   final num distance;
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -16,7 +18,26 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   LocationData? currentLocation;
   StreamSubscription<LocationData>? _locationSubscription;
-  StreamSubscription<DocumentSnapshot>? _documentStream;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+  String? fname;
+  String? carID;
+
+  Future<void> getUserData() async {
+    DocumentReference userDocRef =
+        FirebaseFirestore.instance.collection('dUsers').doc(userId);
+
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    fname = userDocSnapshot.get('firstName');
+    carID = userDocSnapshot.get('carID');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,6 +89,39 @@ class _DetailScreenState extends State<DetailScreen> {
                 height: 260,
               ),
               Padding(
+                padding: const EdgeInsets.only(top: 150),
+                child: Container(
+                  width: 80,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffEEEEEE),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(5),
+                    ),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 2,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        snapshot.data!.docs.singleWhere(
+                            (doc) => doc.id == widget.workID)['carID'],
+                        style: GoogleFonts.prompt(
+                            fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                      Text(
+                        "ชลบุรี",
+                        style: GoogleFonts.prompt(
+                            fontSize: 12, fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.only(top: 220),
                 child: Container(
                   width: 320,
@@ -99,12 +153,16 @@ class _DetailScreenState extends State<DetailScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    const Text("no."),
                                     Text(
-                                      "xxxxxx",
+                                      "no.",
+                                      style: GoogleFonts.prompt(fontSize: 12),
+                                    ),
+                                    Text(
+                                      snapshot.data!.docs.singleWhere((doc) =>
+                                          doc.id == widget.workID)['workID'],
                                       style: GoogleFonts.prompt(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -124,23 +182,68 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(30),
+                        padding: const EdgeInsets.all(20),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(
-                              "Time: ${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.userid)['STime']}",
-                              style: text1(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Time",
+                                  style: text1(),
+                                ),
+                                Text(
+                                  DateFormat('HH:mm').format(snapshot.data!.docs
+                                      .singleWhere((doc) =>
+                                          doc.id == widget.workID)['sTimestamp']
+                                      .toDate()),
+                                  style: text2(),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              child: Text(
-                                "Charger Type: ?",
-                                textAlign: TextAlign.center,
-                                style: text1(),
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Brand",
+                                  style: text1(),
+                                ),
+                                Text(
+                                  snapshot.data!.docs.singleWhere((doc) =>
+                                      doc.id == widget.workID)['brand'],
+                                  style: text2(),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "Energy: ?",
-                              style: text1(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Charger Type",
+                                  textAlign: TextAlign.center,
+                                  style: text1(),
+                                ),
+                                Text(
+                                    snapshot.data!.docs.singleWhere((doc) =>
+                                        doc.id == widget.workID)['type'],
+                                    textAlign: TextAlign.center,
+                                    style: text2()),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Energy",
+                                  style: text1(),
+                                ),
+                                Text(
+                                  snapshot.data!.docs.singleWhere((doc) =>
+                                      doc.id == widget.workID)['energy'],
+                                  style: text2(),
+                                ),
+                              ],
                             )
                           ],
                         ),
@@ -204,10 +307,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           Column(
                             children: [
                               Text(
-                                snapshot.data!.docs
-                                    .singleWhere((doc) =>
-                                        doc.id == widget.userid)['price']
-                                    .toString(),
+                                "${(snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['earning'] * 0.85).toStringAsFixed(0)}฿",
                                 style: GoogleFonts.prompt(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 48,
@@ -224,38 +324,6 @@ class _DetailScreenState extends State<DetailScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          const Text(
-                            "+",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                "?",
-                                style: GoogleFonts.prompt(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 48,
-                                  color: const Color(0xff26A400),
-                                ),
-                              ),
-                              Text(
-                                "โบนัสการรอ",
-                                style: GoogleFonts.prompt(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff26A400),
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                       const SizedBox(
@@ -263,21 +331,20 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          //DatabaseService(uid: widget.userid).sendLocation();
-                          _sendLocation();
-                          _chagneStatus();
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => WorkScreen(
-                                  userid: widget.userid,
-                                  dlat: snapshot.data!.docs.singleWhere((doc) =>
-                                      doc.id == widget.userid)['latitude'],
-                                  dlong: snapshot.data!.docs.singleWhere(
-                                      (doc) =>
-                                          doc.id == widget.userid)['longitude'],
-                                ),
-                              ));
+                          sendData();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WorkScreen(
+                                workID: widget.workID,
+                                dlat: snapshot.data!.docs.singleWhere((doc) =>
+                                    doc.id == widget.workID)['latitude'],
+                                dlong: snapshot.data!.docs.singleWhere((doc) =>
+                                    doc.id == widget.workID)['longitude'],
+                              ),
+                            ),
+                            (route) => route.isFirst,
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff3BB54A),
@@ -304,53 +371,50 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Future<void> _sendLocation() async {
+  Future<void> sendData() async {
     Location location = Location();
-    _locationSubscription = location.onLocationChanged.handleError((onError) {
-      // ignore: avoid_print
-      print(onError);
-      _locationSubscription?.cancel();
-      setState(() {
-        _locationSubscription = null;
-      });
-    }).listen((currentLocation) async {
+    _locationSubscription =
+        location.onLocationChanged.listen((currentLocation) async {
       await FirebaseFirestore.instance
           .collection('requests')
-          .doc(widget.userid)
+          .doc(widget.workID)
           .set({
         'dlatitude': currentLocation.latitude,
         'dlongitude': currentLocation.longitude,
       }, SetOptions(merge: true));
     });
-    _documentStream = FirebaseFirestore.instance
+
+    await FirebaseFirestore.instance
         .collection('requests')
-        .doc(widget.userid)
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      if (!snapshot.exists) {
-        _stopLocation();
+        .doc(widget.workID)
+        .set({
+      'dUserID': userId,
+      'dName': fname,
+      'dCarID': carID,
+      //'status': true,
+    }, SetOptions(merge: true));
+
+    DocumentReference requestDocRef =
+        FirebaseFirestore.instance.collection('requests').doc(widget.workID);
+
+    Stream<DocumentSnapshot> requestDocStream = requestDocRef.snapshots();
+
+    requestDocStream.listen((event) {
+      Map<String, dynamic> requestData = event.data() as Map<String, dynamic>;
+      if (requestData['status'] == true) {
+        _locationSubscription?.cancel();
+        _locationSubscription = null;
       }
     });
   }
 
-  void _stopLocation() {
-    _documentStream?.cancel();
-    _locationSubscription?.cancel();
-    setState(() {
-      _locationSubscription = null;
-    });
-  }
-
-  Future<void> _chagneStatus() async {
-    await FirebaseFirestore.instance
-        .collection('requests')
-        .doc(widget.userid)
-        .set({
-      //'status': true,
-    }, SetOptions(merge: true));
-  }
-
   TextStyle text1() => GoogleFonts.prompt(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Colors.black45,
+      );
+
+  TextStyle text2() => GoogleFonts.prompt(
         fontSize: 12,
         fontWeight: FontWeight.w600,
       );

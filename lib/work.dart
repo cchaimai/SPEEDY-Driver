@@ -13,10 +13,10 @@ import 'package:url_launcher/url_launcher.dart';
 class WorkScreen extends StatefulWidget {
   const WorkScreen(
       {super.key,
-      required this.userid,
+      required this.workID,
       required this.dlat,
       required this.dlong});
-  final String userid;
+  final String workID;
   final double dlat;
   final double dlong;
 
@@ -29,8 +29,12 @@ class _WorkScreenState extends State<WorkScreen> {
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
-  double distance = 0.0;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  StreamSubscription<LocationData>? _locationSubscription;
+  String? name;
+  String? brand;
+  String? carID;
+  String? type;
+  String? energy;
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
@@ -51,7 +55,7 @@ class _WorkScreenState extends State<WorkScreen> {
 
     GoogleMapController googleMapController = await _controller.future;
 
-    location.onLocationChanged.listen(
+    _locationSubscription = location.onLocationChanged.listen(
       (newLoc) {
         setState(() {
           currentLocation = newLoc;
@@ -98,11 +102,31 @@ class _WorkScreenState extends State<WorkScreen> {
     });
   }
 
+  Future<void> getUserData() async {
+    DocumentReference userDocRef =
+        FirebaseFirestore.instance.collection('requests').doc(widget.workID);
+
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    name = userDocSnapshot.get('name');
+    brand = userDocSnapshot.get('brand');
+    carID = userDocSnapshot.get('carID');
+    type = userDocSnapshot.get('type');
+    energy = userDocSnapshot.get('energy');
+  }
+
   @override
   void initState() {
+    super.initState();
     getCurrentLocation();
     setCustomMarkerIcon();
-    super.initState();
+    getUserData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _locationSubscription?.cancel();
   }
 
   @override
@@ -118,13 +142,7 @@ class _WorkScreenState extends State<WorkScreen> {
             bottomRight: Radius.circular(15),
           ),
         ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.menu),
-        ),
-        actions: <Widget>[
+        actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.notifications_outlined),
@@ -176,7 +194,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   left: 0,
                   right: 0,
                   child: Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
                     margin: const EdgeInsets.only(
                       top: 10,
                       bottom: 10,
@@ -278,37 +296,62 @@ class _WorkScreenState extends State<WorkScreen> {
                   ),
                 ),
                 Positioned(
+                  left: 10,
+                  bottom: 15,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      popUb3(context, name!, brand!, carID!, type!, energy!);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      fixedSize: const Size(50, 50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: const Icon(
+                      Icons.list_alt,
+                      color: Colors.black,
+                      size: 30,
+                    ),
+                  ),
+                ),
+                Positioned(
                   right: 10,
                   bottom: 15,
                   child: ElevatedButton(
-                      onPressed: () async {
-                        await launchUrl(Uri.parse(
-                            'google.navigation:q=${widget.dlat}, ${widget.dlong}&key=AIzaSyCdE_5Jk5nE3do7cWezCTL561MBCaGx9p0'));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        fixedSize: const Size(50, 50),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
-                      ),
-                      child: const Icon(
-                        Icons.near_me_outlined,
-                        color: Colors.black,
-                        size: 30,
-                      )),
+                    onPressed: () async {
+                      await launchUrl(Uri.parse(
+                          'google.navigation:q=${widget.dlat}, ${widget.dlong}&key=AIzaSyCdE_5Jk5nE3do7cWezCTL561MBCaGx9p0'));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      fixedSize: const Size(50, 50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: const Icon(
+                      Icons.near_me_outlined,
+                      color: Colors.black,
+                      size: 30,
+                    ),
+                  ),
                 ),
                 Positioned(
                   right: 85,
                   bottom: 15,
                   child: ElevatedButton(
                     onPressed: () {
-                      _sendETime();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EndScreen(
-                                    userid: widget.userid,
-                                  )));
+                      // if (calculateDistance(
+                      //         currentLocation!.latitude!,
+                      //         currentLocation!.longitude!,
+                      //         widget.dlat,
+                      //         widget.dlong) <
+                      //     0.1) {
+                      //   popUb1(context);
+                      // } else {
+                      //   popUb2(context);
+                      // }
+                      popUb1(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff1f1f1f),
@@ -338,9 +381,147 @@ class _WorkScreenState extends State<WorkScreen> {
     );
   }
 
-  _sendETime() async {
-    await firestore.collection('requests').doc(widget.userid).set(
-        {'ETime': DateFormat('HH:mm').format(DateTime.now())},
-        SetOptions(merge: true));
+  popUb1(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceAround,
+          backgroundColor: const Color(0xff1f1f1f),
+          title: Center(
+            child: Text(
+              "ถึงจุดหมายแล้ว",
+              style: GoogleFonts.prompt(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                sendETime().then((value) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EndScreen(
+                        workID: widget.workID,
+                      ),
+                    ),
+                    (route) => route.isFirst,
+                  );
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xff3BB54A),
+                fixedSize: const Size(75, 30),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              child: Text(
+                "ยืนยัน",
+                style: GoogleFonts.prompt(),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffF21616),
+                fixedSize: const Size(75, 30),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              child: Text(
+                "ยกเลิก",
+                style: GoogleFonts.prompt(),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  popUb2(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: const Color(0xff1f1f1f),
+          title: Center(
+            child: Text(
+              "กรุณาไปยังจุดหมาย",
+              style: GoogleFonts.prompt(
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.close),
+              color: Colors.red,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  popUb3(BuildContext context, String name, String brand, String carID,
+      String type, String energy) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          backgroundColor: const Color(0xff1f1f1f),
+          title: Text(
+            "ข้อมูลลูกค้า",
+            style: GoogleFonts.prompt(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+            ),
+          ),
+          content: Text(
+              "ชื่อ : $name\nยี่ห้อรถ : $brand\nทะเบียน : $carID\nหัวชาร์จ : $type\nปริมาณ : $energy",
+              style: GoogleFonts.prompt(
+                color: Colors.white,
+              )),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.close),
+              color: Colors.red,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> sendETime() async {
+    await FirebaseFirestore.instance
+        .collection('requests')
+        .doc(widget.workID)
+        .set({
+      'ETime': DateFormat('HH:mm').format(DateTime.now()),
+      "eTimestamp": FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }

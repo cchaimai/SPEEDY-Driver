@@ -2,20 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'firebase/firestore.dart';
+import 'package:intl/intl.dart';
 import 'map.dart';
 
 class EndScreen extends StatefulWidget {
-  const EndScreen({super.key, required this.userid});
-  final String userid;
+  const EndScreen({super.key, required this.workID});
+  final String workID;
 
   @override
   State<EndScreen> createState() => _EndScreenState();
 }
 
 class _EndScreenState extends State<EndScreen> {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +52,7 @@ class _EndScreenState extends State<EndScreen> {
                     fit: BoxFit.cover,
                   ),
                   Text(
-                    "No.XXXXXX",
+                    "No.${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['workID']}",
                     style: GoogleFonts.prompt(
                       fontWeight: FontWeight.bold,
                       fontSize: 26,
@@ -73,7 +72,10 @@ class _EndScreenState extends State<EndScreen> {
                             style: GoogleFonts.prompt(color: Colors.grey),
                           ),
                           Text(
-                            "${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.userid)['STime']}",
+                            DateFormat('HH:mm').format(snapshot.data!.docs
+                                .singleWhere((doc) => doc.id == widget.workID)[
+                                    'sTimestamp']
+                                .toDate()),
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                             ),
@@ -93,7 +95,10 @@ class _EndScreenState extends State<EndScreen> {
                             ),
                           ),
                           Text(
-                            "${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.userid)['ETime']}",
+                            DateFormat('HH:mm').format(snapshot.data!.docs
+                                .singleWhere((doc) => doc.id == widget.workID)[
+                                    'eTimestamp']
+                                .toDate()),
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                             ),
@@ -113,7 +118,8 @@ class _EndScreenState extends State<EndScreen> {
                             ),
                           ),
                           Text(
-                            "xxxxxx",
+                            snapshot.data!.docs.singleWhere(
+                                (doc) => doc.id == widget.workID)['energy'],
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                             ),
@@ -142,7 +148,7 @@ class _EndScreenState extends State<EndScreen> {
                       child: Column(
                         children: [
                           Text(
-                            "${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.userid)['price']}฿",
+                            "${(snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['earning'] * 0.85).toStringAsFixed(0)}฿",
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                               fontSize: 50,
@@ -163,17 +169,13 @@ class _EndScreenState extends State<EndScreen> {
                             onPressed: () {
                               increaseScore(
                                       userId,
-                                      snapshot.data!.docs.singleWhere((doc) =>
-                                          doc.id == widget.userid)['price'])
+                                      (snapshot.data!.docs.singleWhere((doc) =>
+                                                  doc.id ==
+                                                  widget.workID)['earning'] *
+                                              0.85)
+                                          .toInt())
                                   .then((value) {
-                                DatabaseService(uid: userId).createWorkHistory(
-                                    snapshot.data!.docs.singleWhere((doc) =>
-                                        doc.id == widget.userid)['price']);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MapScreen()));
+                                Navigator.pop(context);
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -203,7 +205,7 @@ class _EndScreenState extends State<EndScreen> {
 
   Future<void> increaseScore(String userId, int amount) async {
     final DocumentReference<Map<String, dynamic>> userRef =
-        firestore.collection('dUsers').doc(userId);
+        FirebaseFirestore.instance.collection('dUsers').doc(userId);
     try {
       await userRef.update({'wallet': FieldValue.increment(amount)});
     } catch (e) {

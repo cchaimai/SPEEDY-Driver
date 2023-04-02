@@ -15,8 +15,7 @@ class SelectScreen extends StatefulWidget {
 }
 
 class _SelectScreenState extends State<SelectScreen> {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,7 @@ class _SelectScreenState extends State<SelectScreen> {
         ],
       ),
       body: StreamBuilder(
-          stream: firestore
+          stream: FirebaseFirestore.instance
               .collection("banks")
               .where("owner", isEqualTo: userId)
               .snapshots(),
@@ -101,12 +100,8 @@ class _SelectScreenState extends State<SelectScreen> {
                                                         .docs[index]['image'],
                                                     name: snapshot.data!
                                                         .docs[index]['name'],
-                                                    account: snapshot
-                                                            .data!
-                                                            .docs[index]
-                                                                ['account']
-                                                            .substring(0, 6) +
-                                                        "XXXX",
+                                                    account: snapshot.data!
+                                                        .docs[index]['account'],
                                                   )));
                                     },
                                     child:
@@ -116,10 +111,7 @@ class _SelectScreenState extends State<SelectScreen> {
                                             )),
                                   ),
                                   trailing: Text(
-                                      // ignore: prefer_interpolation_to_compose_strings
-                                      snapshot.data!.docs[index]['account']
-                                              .substring(0, 6) +
-                                          "XXXX",
+                                      "${snapshot.data!.docs[index]['account'].substring(0, 6)}XXXX",
                                       style: GoogleFonts.prompt(
                                         fontWeight: FontWeight.w500,
                                       )),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,9 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  User userId = FirebaseAuth.instance.currentUser!;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
   final Completer<GoogleMapController> _controller = Completer();
+  StreamSubscription<LocationData>? _locationSubscription;
 
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
@@ -33,7 +35,7 @@ class _MapScreenState extends State<MapScreen> {
 
     GoogleMapController googleMapController = await _controller.future;
 
-    location.onLocationChanged.listen(
+    _locationSubscription = location.onLocationChanged.listen(
       (newLoc) {
         currentLocation = newLoc;
         googleMapController.animateCamera(
@@ -56,6 +58,13 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     getCurrentLocation();
+    print("--------------$userId----------------------");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _locationSubscription?.cancel();
   }
 
   @override
@@ -132,25 +141,12 @@ class _MapScreenState extends State<MapScreen> {
                         onTap: () {},
                         child: Padding(
                           padding: const EdgeInsets.only(right: 5),
-                          child: (snapshot.data!.docs
-                                      .singleWhere((doc) => doc.id == userId)
-                                      .data() as Map<String, dynamic>)
-                                  .containsKey('image')
-                              ? CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      snapshot.data!.docs.singleWhere(
-                                          (doc) => doc.id == userId)['image']),
-                                  radius: 30,
-                                )
-                              : const CircleAvatar(
-                                  backgroundColor: Color(0xff1f1f1f),
-                                  radius: 30,
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 40,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(snapshot.data!.docs
+                                    .singleWhere((doc) => doc.id == userId)[
+                                'driverProfile']),
+                            radius: 30,
+                          ),
                         ),
                       ),
                     )

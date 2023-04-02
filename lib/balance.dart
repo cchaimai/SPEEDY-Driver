@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:speedy/historybank.dart';
 import 'package:speedy/select.dart';
 
@@ -13,17 +14,15 @@ class BalanceScreen extends StatefulWidget {
 }
 
 class _BalanceScreenState extends State<BalanceScreen> {
-  final userId = FirebaseAuth.instance.currentUser!.uid;
-  num? wallet;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+  num wallet = 0;
 
   Future<void> getUserData() async {
     DocumentReference userDocRef =
         FirebaseFirestore.instance.collection('dUsers').doc(userId);
 
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
-
     wallet = userDocSnapshot.get('wallet');
-
     setState(() {});
   }
 
@@ -61,8 +60,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection('workhistory')
-              .where("owner", isEqualTo: userId)
+              .collection('requests')
+              .where("dUserID", isEqualTo: userId)
+              .orderBy("eTimestamp", descending: true)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
@@ -174,20 +174,20 @@ class _BalanceScreenState extends State<BalanceScreen> {
                               child: ListView.builder(
                                   itemCount: snapshot.data?.docs.length,
                                   itemBuilder: (context, index) {
-                                    int reIndex =
-                                        snapshot.data!.docs.length - 1 - index;
                                     return Column(
                                       children: [
                                         ListTile(
                                           title: Text(
-                                              snapshot.data!.docs[reIndex]
-                                                  ['day'],
+                                              DateFormat('dd MMM yy', 'th')
+                                                  .format(snapshot.data!
+                                                      .docs[index]['eTimestamp']
+                                                      .toDate()),
                                               style: GoogleFonts.prompt()),
                                           subtitle: Text(
-                                              "${snapshot.data!.docs[reIndex]['time']} น.",
+                                              "${DateFormat('HH:mm').format(snapshot.data!.docs[index]['eTimestamp'].toDate())} น.",
                                               style: GoogleFonts.prompt()),
                                           trailing: Text(
-                                              "+${snapshot.data!.docs[reIndex]['amount'].toString()} ฿",
+                                              "+${(snapshot.data!.docs[index]['earning'] * 0.85).toStringAsFixed(0)} ฿",
                                               style: GoogleFonts.prompt(
                                                   color: Colors.green,
                                                   fontWeight: FontWeight.w500,

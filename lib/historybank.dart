@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:speedy/balance.dart';
 
 class HistoryBankScreen extends StatefulWidget {
@@ -12,7 +13,8 @@ class HistoryBankScreen extends StatefulWidget {
 }
 
 class _HistoryBankScreenState extends State<HistoryBankScreen> {
-  final userId = FirebaseAuth.instance.currentUser!.uid;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,28 +46,35 @@ class _HistoryBankScreenState extends State<HistoryBankScreen> {
           stream: FirebaseFirestore.instance
               .collection("bankhistory")
               .where("owner", isEqualTo: userId)
+              .orderBy("timestamp", descending: true)
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.amber,
+                ),
+              );
             }
+
             return Padding(
               padding: const EdgeInsets.all(20),
               child: ListView.builder(
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
-                  int reIndex = snapshot.data!.docs.length - 1 - index;
                   return Column(
                     children: [
                       ListTile(
                         title: Text("รายการถอน", style: GoogleFonts.prompt()),
                         subtitle: Text(
-                            "เลขที่บัญชี ${snapshot.data!.docs[reIndex]['account']}\n${snapshot.data!.docs[reIndex]['day']}  ${snapshot.data!.docs[reIndex]['time']} น.",
+                            "เลขที่บัญชี ${snapshot.data!.docs[index]['account'].substring(0, 6)}XXXX\n${DateFormat('dd MMM yy', 'th').format(snapshot.data!.docs[index]['timestamp'].toDate())}  ${DateFormat('HH:mm').format(snapshot.data!.docs[index]['timestamp'].toDate())} น.",
                             style: GoogleFonts.prompt()),
                         trailing: Text(
-                            "-${snapshot.data!.docs[reIndex]['amount']} ฿",
+                            "-${snapshot.data!.docs[index]['amount']} ฿",
                             style: GoogleFonts.prompt(fontSize: 20)),
                       ),
                       Container(

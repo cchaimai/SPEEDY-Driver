@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,8 @@ class RequestScreen extends StatefulWidget {
 }
 
 class _RequestScreenState extends State<RequestScreen> {
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
   double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var a = 0.5 -
@@ -57,52 +60,82 @@ class _RequestScreenState extends State<RequestScreen> {
             return ListView.builder(
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xff3BB54A),
-                    radius: 30,
-                    child: FittedBox(
-                      child: Text(
-                          "${calculateDistance(widget.lat, widget.long, snapshot.data!.docs[index]['latitude'], snapshot.data!.docs[index]['longitude']).toStringAsFixed(1)} กม.",
-                          style: GoogleFonts.prompt()),
+                return Column(
+                  children: [
+                    ListTile(
+                        leading: CircleAvatar(
+                          foregroundColor: Colors.white,
+                          backgroundColor: const Color(0xff3BB54A),
+                          radius: 30,
+                          child: Text(
+                              "${calculateDistance(widget.lat, widget.long, snapshot.data!.docs[index]['latitude'], snapshot.data!.docs[index]['longitude']).toStringAsFixed(1)} กม.",
+                              style: GoogleFonts.prompt()),
+                        ),
+                        title: Text(
+                            "No.${snapshot.data!.docs[index]['workID']}",
+                            style: GoogleFonts.prompt()),
+                        subtitle: Text(
+                          "รายรับ: ${(snapshot.data!.docs[index]['earning'] * 0.85).toStringAsFixed(0)}฿",
+                          style: GoogleFonts.prompt(),
+                        ),
+                        trailing: IconButton(
+                            onPressed: () {
+                              sendTime(snapshot, index).then((value) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailScreen(
+                                      workID: snapshot.data!.docs[index].id,
+                                      distance: calculateDistance(
+                                          widget.lat,
+                                          widget.long,
+                                          snapshot.data!.docs[index]
+                                              ['latitude'],
+                                          snapshot.data!.docs[index]
+                                              ['longitude']),
+                                    ),
+                                  ),
+                                );
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_forward_ios))
+                        //ElevatedButton(
+                        //   style: ElevatedButton.styleFrom(
+                        //       backgroundColor: const Color(0xff3BB54A)),
+                        //   onPressed: () {
+                        //     sendTime(snapshot, reIndex);
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //           builder: (context) => DetailScreen(
+                        //             userid: snapshot.data!.docs[reIndex].id,
+                        //             distance: calculateDistance(
+                        //                 widget.lat,
+                        //                 widget.long,
+                        //                 snapshot.data!.docs[reIndex]['latitude'],
+                        //                 snapshot.data!.docs[reIndex]
+                        //                     ['longitude']),
+                        //           ),
+                        //         ));
+                        //   },
+                        //   child: Text(
+                        //     "รับงาน",
+                        //     style: GoogleFonts.prompt(),
+                        //   ),
+                        // ),
+                        ),
+                    Container(
+                      width: double.infinity,
+                      height: 1,
+                      color: Colors.grey,
                     ),
-                  ),
-                  title: Text(snapshot.data!.docs[index]['user'],
-                      style: GoogleFonts.prompt()),
-                  subtitle: Text(
-                    snapshot.data!.docs[index]['price'].toString(),
-                    style: GoogleFonts.prompt(),
-                  ),
-                  trailing: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xff3BB54A)),
-                    onPressed: () {
-                      sendTime(snapshot, index);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DetailScreen(
-                              userid: snapshot.data!.docs[index].id,
-                              distance: calculateDistance(
-                                  widget.lat,
-                                  widget.long,
-                                  snapshot.data!.docs[index]['latitude'],
-                                  snapshot.data!.docs[index]['longitude']),
-                            ),
-                          ));
-                    },
-                    child: Text(
-                      "รับงาน",
-                      style: GoogleFonts.prompt(),
-                    ),
-                  ),
+                  ],
                 );
               },
             );
           }),
       floatingActionButton: FloatingActionButton(onPressed: () {
-        _sendData();
+        sendData();
       }),
     );
   }
@@ -113,17 +146,22 @@ class _RequestScreenState extends State<RequestScreen> {
         .collection('requests')
         .doc(snapshot.data!.docs[index].id)
         .set({
-      'STime': DateFormat('HH:mm').format(DateTime.now()),
+      "sTimestamp": FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
 
-  Future<void> _sendData() async {
+  Future<void> sendData() async {
     await FirebaseFirestore.instance.collection('requests').doc().set({
-      'user': "earth",
+      'name': "earth",
+      'type': "Type 2",
+      'energy': "7.2kW",
       'latitude': 13.11533244163535,
       'longitude': 100.92545502431265,
-      'price': 100,
-      'status': false
+      'earning': 100,
+      'status': false,
+      'workID': 'SDBASE',
+      'carID': 'กก 5555',
+      'brand': 'tesla',
     }, SetOptions(merge: true));
   }
 }
