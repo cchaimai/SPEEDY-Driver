@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:speedy/firebase/auth.dart';
+import 'package:speedy/register/verification.dart';
 import 'package:speedy/test/home.dart';
 import 'package:speedy/test/proflie.dart';
 import '../map.dart';
@@ -271,23 +272,21 @@ class _loginScreenState extends State<loginScreen> {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
-        User user = userCredential.user!;
-        await FirebaseFirestore.instance
+        String _uid = userCredential.user!.uid; // ดึง uid จาก user object
+        final userDoc = await FirebaseFirestore.instance
             .collection('dUsers')
-            .doc(user.uid)
-            .set({
-          'email': email,
-        });
-        // ignore: use_build_context_synchronously
-        if (FirebaseAuth.instance.currentUser != null) {
-          // ignore: use_build_context_synchronously
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MapScreen(),
-            ),
-          );
+            .doc(_uid)
+            .get();
+
+        final role = userDoc.data()?['role'];
+
+        // Display different screens depending on the user's role
+        if (role == 'user_driver') {
+          nextScreenReplace(context, const verificationScreen());
+        } else if (role == 'driver') {
+          nextScreenReplace(context, const MapScreen());
         }
+
         formKey.currentState!.reset();
       } on FirebaseAuthException catch (e) {
         // Handle the FirebaseAuthException.
