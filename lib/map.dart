@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:speedy/balance.dart';
 import 'package:speedy/request.dart';
 
@@ -19,40 +19,36 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   String userId = FirebaseAuth.instance.currentUser!.uid;
   final Completer<GoogleMapController> _controller = Completer();
-  StreamSubscription<LocationData>? _locationSubscription;
-
-  List<LatLng> polylineCoordinates = [];
-  LocationData? currentLocation;
+  StreamSubscription<Position>? positionStream;
+  Position? currentLocation;
 
   void getCurrentLocation() async {
-    Location location = Location();
+    bool serviceEnabled;
+    LocationPermission permission;
 
-    location.getLocation().then(
-      (location) {
-        currentLocation = location;
-      },
-    );
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
 
-    GoogleMapController googleMapController = await _controller.future;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
 
-    _locationSubscription = location.onLocationChanged.listen(
-      (newLoc) {
-        currentLocation = newLoc;
-        googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              zoom: 15,
-              target: LatLng(
-                newLoc.latitude!,
-                newLoc.longitude!,
-              ),
-            ),
-          ),
-        );
-        setState(() {});
-      },
-    );
-    print("--------------$currentLocation----------------------");
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    currentLocation = await Geolocator.getCurrentPosition();
+    positionStream = Geolocator.getPositionStream().listen((position) {
+      currentLocation = position;
+      setState(() {});
+    });
   }
 
   @override
@@ -65,7 +61,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void dispose() {
     super.dispose();
-    _locationSubscription?.cancel();
+    positionStream?.cancel();
   }
 
   @override
@@ -88,15 +84,15 @@ class _MapScreenState extends State<MapScreen> {
                     GoogleMap(
                       zoomControlsEnabled: false,
                       initialCameraPosition: CameraPosition(
-                        target: LatLng(currentLocation!.latitude!,
-                            currentLocation!.longitude!),
+                        target: LatLng(currentLocation!.latitude,
+                            currentLocation!.longitude),
                         zoom: 15,
                       ),
                       markers: {
                         Marker(
                           markerId: const MarkerId("currentLocation"),
-                          position: LatLng(currentLocation!.latitude!,
-                              currentLocation!.longitude!),
+                          position: LatLng(currentLocation!.latitude,
+                              currentLocation!.longitude),
                         ),
                       },
                       onMapCreated: (mapController) {
@@ -162,12 +158,12 @@ class _MapScreenState extends State<MapScreen> {
           style: GoogleFonts.prompt(fontWeight: FontWeight.w600, fontSize: 16),
         ),
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => RequestScreen(
-                    lat: currentLocation!.latitude!,
-                    long: currentLocation!.longitude!),
+                    lat: currentLocation!.latitude,
+                    long: currentLocation!.longitude),
               ));
         },
       ),

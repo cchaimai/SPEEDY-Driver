@@ -148,7 +148,7 @@ class _EndScreenState extends State<EndScreen> {
                       child: Column(
                         children: [
                           Text(
-                            "${(snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['earning'] * 0.85).toStringAsFixed(0)}฿",
+                            "${(snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['price'] * 0.85).toStringAsFixed(0)}฿",
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                               fontSize: 50,
@@ -171,7 +171,7 @@ class _EndScreenState extends State<EndScreen> {
                                       userId,
                                       (snapshot.data!.docs.singleWhere((doc) =>
                                                   doc.id ==
-                                                  widget.workID)['earning'] *
+                                                  widget.workID)['price'] *
                                               0.85)
                                           .toInt())
                                   .then((value) {

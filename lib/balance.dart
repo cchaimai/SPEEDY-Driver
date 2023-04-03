@@ -185,7 +185,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                               "${DateFormat('HH:mm').format(snapshot.data!.docs[index]['eTimestamp'].toDate())} น.",
                                               style: GoogleFonts.prompt()),
                                           trailing: Text(
-                                              "+${(snapshot.data!.docs[index]['earning'] * 0.85).toStringAsFixed(0)} ฿",
+                                              "+${(snapshot.data!.docs[index]['price'] * 0.85).toStringAsFixed(0)} ฿",
                                               style: GoogleFonts.prompt(
                                                   color: Colors.green,
                                                   fontWeight: FontWeight.w500,

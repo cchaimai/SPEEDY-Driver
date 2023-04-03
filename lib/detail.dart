@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
 import 'package:speedy/work.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -16,8 +16,7 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  LocationData? currentLocation;
-  StreamSubscription<LocationData>? _locationSubscription;
+  StreamSubscription<Position>? positionStream;
   String userId = FirebaseAuth.instance.currentUser!.uid;
   String? fname;
   String? carID;
@@ -108,12 +107,13 @@ class _DetailScreenState extends State<DetailScreen> {
                     children: [
                       Text(
                         snapshot.data!.docs.singleWhere(
-                            (doc) => doc.id == widget.workID)['carID'],
+                            (doc) => doc.id == widget.workID)['UcarID'],
                         style: GoogleFonts.prompt(
                             fontSize: 12, fontWeight: FontWeight.w500),
                       ),
                       Text(
-                        "ชลบุรี",
+                        snapshot.data!.docs.singleWhere(
+                            (doc) => doc.id == widget.workID)['province'],
                         style: GoogleFonts.prompt(
                             fontSize: 12, fontWeight: FontWeight.w500),
                       ),
@@ -211,7 +211,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 ),
                                 Text(
                                   snapshot.data!.docs.singleWhere((doc) =>
-                                      doc.id == widget.workID)['brand'],
+                                      doc.id == widget.workID)['cartype'],
                                   style: text2(),
                                 ),
                               ],
@@ -226,7 +226,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 ),
                                 Text(
                                     snapshot.data!.docs.singleWhere((doc) =>
-                                        doc.id == widget.workID)['type'],
+                                        doc.id == widget.workID)['chargetype'],
                                     textAlign: TextAlign.center,
                                     style: text2()),
                               ],
@@ -239,8 +239,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   style: text1(),
                                 ),
                                 Text(
-                                  snapshot.data!.docs.singleWhere((doc) =>
-                                      doc.id == widget.workID)['energy'],
+                                  "${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['energy']}kWh",
                                   style: text2(),
                                 ),
                               ],
@@ -307,7 +306,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           Column(
                             children: [
                               Text(
-                                "${(snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['earning'] * 0.85).toStringAsFixed(0)}฿",
+                                "${(snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['price'] * 0.85).toStringAsFixed(0)}฿",
                                 style: GoogleFonts.prompt(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 48,
@@ -338,12 +337,12 @@ class _DetailScreenState extends State<DetailScreen> {
                               builder: (context) => WorkScreen(
                                 workID: widget.workID,
                                 dlat: snapshot.data!.docs.singleWhere((doc) =>
-                                    doc.id == widget.workID)['latitude'],
+                                    doc.id == widget.workID)['Ulatitude'],
                                 dlong: snapshot.data!.docs.singleWhere((doc) =>
-                                    doc.id == widget.workID)['longitude'],
+                                    doc.id == widget.workID)['Ulongitude'],
                               ),
                             ),
-                            (route) => route.isFirst,
+                            (route) => false,
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -372,9 +371,8 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Future<void> sendData() async {
-    Location location = Location();
-    _locationSubscription =
-        location.onLocationChanged.listen((currentLocation) async {
+    positionStream =
+        Geolocator.getPositionStream().listen((currentLocation) async {
       await FirebaseFirestore.instance
           .collection('requests')
           .doc(widget.workID)
@@ -401,9 +399,9 @@ class _DetailScreenState extends State<DetailScreen> {
 
     requestDocStream.listen((event) {
       Map<String, dynamic> requestData = event.data() as Map<String, dynamic>;
-      if (requestData['status'] == true) {
-        _locationSubscription?.cancel();
-        _locationSubscription = null;
+      if (requestData['status'] == 'Done') {
+        positionStream?.cancel();
+        positionStream = null;
       }
     });
   }

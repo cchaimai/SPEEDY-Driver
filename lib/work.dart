@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:location/location.dart';
 import 'package:speedy/end.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,9 +27,8 @@ class WorkScreen extends StatefulWidget {
 class _WorkScreenState extends State<WorkScreen> {
   final Completer<GoogleMapController> _controller = Completer();
   List<LatLng> polylineCoordinates = [];
-  LocationData? currentLocation;
-  BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
-  StreamSubscription<LocationData>? _locationSubscription;
+  StreamSubscription<Position>? positionStream;
+  Position? currentLocation;
   String? name;
   String? brand;
   String? carID;
@@ -45,33 +44,33 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   void getCurrentLocation() async {
-    Location location = Location();
+    bool serviceEnabled;
+    LocationPermission permission;
 
-    location.getLocation().then(
-      (location) {
-        currentLocation = location;
-      },
-    );
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
 
-    GoogleMapController googleMapController = await _controller.future;
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
 
-    _locationSubscription = location.onLocationChanged.listen(
-      (newLoc) {
-        currentLocation = newLoc;
-        googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              zoom: 15,
-              target: LatLng(
-                newLoc.latitude!,
-                newLoc.longitude!,
-              ),
-            ),
-          ),
-        );
-        setState(() {});
-      },
-    );
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    currentLocation = await Geolocator.getCurrentPosition();
+
+    positionStream = Geolocator.getPositionStream().listen((position) {
+      currentLocation = position;
+
+      setState(() {});
+    });
     getPolyPoints(LatLng(widget.dlat, widget.dlong));
   }
 
@@ -80,7 +79,7 @@ class _WorkScreenState extends State<WorkScreen> {
 
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       "AIzaSyCdE_5Jk5nE3do7cWezCTL561MBCaGx9p0",
-      PointLatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+      PointLatLng(currentLocation!.latitude, currentLocation!.longitude),
       PointLatLng(dst.latitude, dst.longitude),
     );
     if (result.points.isNotEmpty) {
@@ -93,24 +92,16 @@ class _WorkScreenState extends State<WorkScreen> {
     setState(() {});
   }
 
-  void setCustomMarkerIcon() {
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration.empty, "assets/images/Vector.png")
-        .then((icon) {
-      sourceIcon = icon;
-    });
-  }
-
   Future<void> getUserData() async {
     DocumentReference userDocRef =
         FirebaseFirestore.instance.collection('requests').doc(widget.workID);
 
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
-    name = userDocSnapshot.get('name');
-    brand = userDocSnapshot.get('brand');
-    carID = userDocSnapshot.get('carID');
-    type = userDocSnapshot.get('type');
+    name = userDocSnapshot.get('Uname');
+    brand = userDocSnapshot.get('cartype');
+    carID = userDocSnapshot.get('UcarID');
+    type = userDocSnapshot.get('chargetype');
     energy = userDocSnapshot.get('energy');
   }
 
@@ -118,7 +109,7 @@ class _WorkScreenState extends State<WorkScreen> {
   void initState() {
     super.initState();
     getCurrentLocation();
-    setCustomMarkerIcon();
+
     getUserData();
     _controller.future.then((controller) {
       controller.showMarkerInfoWindow(const MarkerId('destination'));
@@ -128,7 +119,7 @@ class _WorkScreenState extends State<WorkScreen> {
   @override
   void dispose() {
     super.dispose();
-    _locationSubscription?.cancel();
+    positionStream?.cancel();
   }
 
   @override
@@ -159,8 +150,8 @@ class _WorkScreenState extends State<WorkScreen> {
                   child: GoogleMap(
                     zoomControlsEnabled: false,
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(currentLocation!.latitude!,
-                          currentLocation!.longitude!),
+                      target: LatLng(currentLocation!.latitude,
+                          currentLocation!.longitude),
                       zoom: 15,
                     ),
                     polylines: {
@@ -174,8 +165,8 @@ class _WorkScreenState extends State<WorkScreen> {
                     markers: {
                       Marker(
                         markerId: const MarkerId("currentLocation"),
-                        position: LatLng(currentLocation!.latitude!,
-                            currentLocation!.longitude!),
+                        position: LatLng(currentLocation!.latitude,
+                            currentLocation!.longitude),
                       ),
                       Marker(
                         markerId: const MarkerId("destination"),
@@ -262,7 +253,7 @@ class _WorkScreenState extends State<WorkScreen> {
                                 ),
                               ),
                               Text(
-                                "${calculateDistance(currentLocation!.latitude!, currentLocation!.longitude!, widget.dlat, widget.dlong).toStringAsFixed(2)} Km",
+                                "${calculateDistance(currentLocation!.latitude, currentLocation!.longitude, widget.dlat, widget.dlong).toStringAsFixed(2)} Km",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -502,7 +493,7 @@ class _WorkScreenState extends State<WorkScreen> {
             ),
           ),
           content: Text(
-              "ชื่อ : $name\nยี่ห้อรถ : $brand\nทะเบียน : $carID\nหัวชาร์จ : $type\nปริมาณ : $energy",
+              "ชื่อ : $name\nยี่ห้อรถ : $brand\nทะเบียน : $carID\nหัวชาร์จ : $type\nปริมาณ : $energy kWh",
               style: GoogleFonts.prompt(
                 color: Colors.white,
               )),
@@ -525,7 +516,6 @@ class _WorkScreenState extends State<WorkScreen> {
         .collection('requests')
         .doc(widget.workID)
         .set({
-      'ETime': DateFormat('HH:mm').format(DateTime.now()),
       "eTimestamp": FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }

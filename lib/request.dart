@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:speedy/detail.dart';
+import 'package:speedy/map.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key, required this.lat, required this.long});
@@ -49,7 +49,7 @@ class _RequestScreenState extends State<RequestScreen> {
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("requests")
-              .where("status", isEqualTo: false)
+              .where("status", isEqualTo: 'Wait')
               .snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
@@ -68,14 +68,14 @@ class _RequestScreenState extends State<RequestScreen> {
                           backgroundColor: const Color(0xff3BB54A),
                           radius: 30,
                           child: Text(
-                              "${calculateDistance(widget.lat, widget.long, snapshot.data!.docs[index]['latitude'], snapshot.data!.docs[index]['longitude']).toStringAsFixed(1)} กม.",
+                              "${calculateDistance(widget.lat, widget.long, snapshot.data!.docs[index]['Ulatitude'], snapshot.data!.docs[index]['Ulongitude']).toStringAsFixed(2)} กม.",
                               style: GoogleFonts.prompt()),
                         ),
                         title: Text(
                             "No.${snapshot.data!.docs[index]['workID']}",
                             style: GoogleFonts.prompt()),
                         subtitle: Text(
-                          "รายรับ: ${(snapshot.data!.docs[index]['earning'] * 0.85).toStringAsFixed(0)}฿",
+                          "${snapshot.data!.docs[index]['chargetype']}  รายรับ: ${(snapshot.data!.docs[index]['price'] * 0.85).toStringAsFixed(0)}฿",
                           style: GoogleFonts.prompt(),
                         ),
                         trailing: IconButton(
@@ -90,40 +90,15 @@ class _RequestScreenState extends State<RequestScreen> {
                                           widget.lat,
                                           widget.long,
                                           snapshot.data!.docs[index]
-                                              ['latitude'],
+                                              ['Ulatitude'],
                                           snapshot.data!.docs[index]
-                                              ['longitude']),
+                                              ['Ulongitude']),
                                     ),
                                   ),
                                 );
                               });
                             },
-                            icon: const Icon(Icons.arrow_forward_ios))
-                        //ElevatedButton(
-                        //   style: ElevatedButton.styleFrom(
-                        //       backgroundColor: const Color(0xff3BB54A)),
-                        //   onPressed: () {
-                        //     sendTime(snapshot, reIndex);
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //           builder: (context) => DetailScreen(
-                        //             userid: snapshot.data!.docs[reIndex].id,
-                        //             distance: calculateDistance(
-                        //                 widget.lat,
-                        //                 widget.long,
-                        //                 snapshot.data!.docs[reIndex]['latitude'],
-                        //                 snapshot.data!.docs[reIndex]
-                        //                     ['longitude']),
-                        //           ),
-                        //         ));
-                        //   },
-                        //   child: Text(
-                        //     "รับงาน",
-                        //     style: GoogleFonts.prompt(),
-                        //   ),
-                        // ),
-                        ),
+                            icon: const Icon(Icons.arrow_forward_ios))),
                     Container(
                       width: double.infinity,
                       height: 1,
@@ -147,6 +122,8 @@ class _RequestScreenState extends State<RequestScreen> {
         .doc(snapshot.data!.docs[index].id)
         .set({
       "sTimestamp": FieldValue.serverTimestamp(),
+      'dlatitude': widget.lat,
+      'dlongitude': widget.long,
     }, SetOptions(merge: true));
   }
 
