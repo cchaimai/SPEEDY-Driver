@@ -58,18 +58,16 @@ class _BalanceScreenState extends State<BalanceScreen> {
           )
         ],
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance
               .collection('requests')
               .where("dUserID", isEqualTo: userId)
               .orderBy("eTimestamp", descending: true)
-              .snapshots(),
+              .get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.black,
-                ),
+                child: CircularProgressIndicator(),
               );
             }
 

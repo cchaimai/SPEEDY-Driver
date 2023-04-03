@@ -57,8 +57,8 @@ class _DetailScreenState extends State<DetailScreen> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('requests').snapshots(),
+      body: FutureBuilder(
+        future: FirebaseFirestore.instance.collection('requests').get(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -83,8 +83,8 @@ class _DetailScreenState extends State<DetailScreen> {
                     fontWeight: FontWeight.bold,
                     fontSize: 70),
               ),
-              Image.network(
-                "https://cdn.discordapp.com/attachments/956974071193698424/1076810278081146890/Tesla-PNG-Photos.png",
+              Image.asset(
+                "assets/images/Tesla.png",
                 width: 320,
                 height: 260,
               ),

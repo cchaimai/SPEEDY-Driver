@@ -34,8 +34,8 @@ class _EndScreenState extends State<EndScreen> {
           )
         ],
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("requests").snapshots(),
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance.collection("requests").get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -45,8 +45,8 @@ class _EndScreenState extends State<EndScreen> {
             return Center(
               child: Column(
                 children: [
-                  Image.network(
-                    "https://cdn.discordapp.com/attachments/956974071193698424/1077693487916515429/62112c9b15fb4bf9e38567d6e436b2dd-tesla-car-svg.png",
+                  Image.asset(
+                    "assets/images/car.png",
                     width: 500,
                     height: 250,
                     fit: BoxFit.cover,
@@ -175,7 +175,12 @@ class _EndScreenState extends State<EndScreen> {
                                               0.85)
                                           .toInt())
                                   .then((value) {
-                                Navigator.pop(context);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const MapScreen(),
+                                  ),
+                                );
                               });
                             },
                             style: ElevatedButton.styleFrom(

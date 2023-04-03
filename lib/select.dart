@@ -37,24 +37,25 @@ class _SelectScreenState extends State<SelectScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: <Widget>[
+        actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.notifications_outlined),
           )
         ],
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance
               .collection("banks")
               .where("owner", isEqualTo: userId)
-              .snapshots(),
+              .get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
+
             return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(

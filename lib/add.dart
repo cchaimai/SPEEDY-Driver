@@ -44,49 +44,49 @@ class _AddScreenState extends State<AddScreen> {
           children: [
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087331970473795584/-removebg-preview.png",
+              "assets/images/KMA.png",
               "กรุงศรี",
               const Color(0xff705F5F),
             ),
             horizontalline(),
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087332394111086622/Krung_Thai_Bank_logo.svg.png",
+              "assets/images/KTB.png",
               "กรุงไทย",
               const Color(0xff13A1E4),
             ),
             horizontalline(),
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087332798588801085/280688579024211.png",
+              "assets/images/SCB.png",
               "ไทยพาณิชย์",
               const Color(0xff4E2A82),
             ),
             horizontalline(),
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087334693285937202/fa4b4a6ef2f95136051607a7fba619ba.png",
+              "assets/images/GSB.png",
               "ออมสิน",
               const Color(0xffFF36A0),
             ),
             horizontalline(),
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087334993279340644/logo.png",
+              "assets/images/KBANK.png",
               "กสิกรไทย",
               const Color(0xff00A950),
             ),
             horizontalline(),
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087336195165532240/images.png",
+              "assets/images/TTB.png",
               "ทหารไทยธนชาต",
               const Color(0xff0050F0),
             ),
             horizontalline(),
             bankList(
               context,
-              "https://cdn.discordapp.com/attachments/956974071193698424/1087336514079424512/1409170288-b60f8c1e0e-o.png",
+              "assets/images/BBL.png",
               "กรุงเทพ",
               const Color(0xff013194),
             ),
@@ -102,7 +102,7 @@ class _AddScreenState extends State<AddScreen> {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: Colors.transparent,
-        backgroundImage: NetworkImage(image),
+        backgroundImage: AssetImage(image),
       ),
       title: InkWell(
           highlightColor: color,

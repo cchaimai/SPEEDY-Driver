@@ -57,20 +57,19 @@ class _WorkScreenState extends State<WorkScreen> {
 
     _locationSubscription = location.onLocationChanged.listen(
       (newLoc) {
-        setState(() {
-          currentLocation = newLoc;
-          googleMapController.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                zoom: 15,
-                target: LatLng(
-                  newLoc.latitude!,
-                  newLoc.longitude!,
-                ),
+        currentLocation = newLoc;
+        googleMapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              zoom: 15,
+              target: LatLng(
+                newLoc.latitude!,
+                newLoc.longitude!,
               ),
             ),
-          );
-        });
+          ),
+        );
+        setState(() {});
       },
     );
     getPolyPoints(LatLng(widget.dlat, widget.dlong));
@@ -121,6 +120,9 @@ class _WorkScreenState extends State<WorkScreen> {
     getCurrentLocation();
     setCustomMarkerIcon();
     getUserData();
+    _controller.future.then((controller) {
+      controller.showMarkerInfoWindow(const MarkerId('destination'));
+    });
   }
 
   @override
@@ -176,13 +178,16 @@ class _WorkScreenState extends State<WorkScreen> {
                             currentLocation!.longitude!),
                       ),
                       Marker(
-                          markerId: const MarkerId("destination"),
-                          position: LatLng(
-                            widget.dlat,
-                            widget.dlong,
-                          ),
-                          infoWindow: const InfoWindow(title: 'จุดหมาย'),
-                          icon: BitmapDescriptor.defaultMarkerWithHue(127)),
+                        markerId: const MarkerId("destination"),
+                        position: LatLng(
+                          widget.dlat,
+                          widget.dlong,
+                        ),
+                        infoWindow: const InfoWindow(
+                          title: 'จุดหมาย',
+                        ),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(127),
+                      ),
                     },
                     onMapCreated: (mapController) {
                       _controller.complete(mapController);

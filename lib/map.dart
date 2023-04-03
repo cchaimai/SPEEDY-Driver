@@ -52,6 +52,7 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {});
       },
     );
+    print("--------------$currentLocation----------------------");
   }
 
   @override
@@ -161,7 +162,7 @@ class _MapScreenState extends State<MapScreen> {
           style: GoogleFonts.prompt(fontWeight: FontWeight.w600, fontSize: 16),
         ),
         onPressed: () {
-          Navigator.push(
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => RequestScreen(

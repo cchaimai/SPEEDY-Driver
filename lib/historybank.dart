@@ -42,12 +42,12 @@ class _HistoryBankScreenState extends State<HistoryBankScreen> {
           )
         ],
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance
               .collection("bankhistory")
               .where("owner", isEqualTo: userId)
               .orderBy("timestamp", descending: true)
-              .snapshots(),
+              .get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(

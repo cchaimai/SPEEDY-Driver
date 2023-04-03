@@ -46,7 +46,7 @@ class _Add2ScreenState extends State<Add2Screen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: <Widget>[
+        actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.notifications_outlined),
@@ -74,7 +74,7 @@ class _Add2ScreenState extends State<Add2Screen> {
                       children: [
                         CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage: NetworkImage(widget.image),
+                          backgroundImage: AssetImage(widget.image),
                           radius: 17,
                         ),
                         const SizedBox(
