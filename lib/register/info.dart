@@ -198,8 +198,7 @@ class _informationScreenState extends State<informationScreen> {
                       onPressed: () => Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  registerScreen(user: user))),
+                              builder: (context) => const registerScreen())),
                       child: const Text('OK'),
                     ),
                   ],
@@ -810,19 +809,18 @@ class _informationScreenState extends State<informationScreen> {
     User user = FirebaseAuth.instance.currentUser!;
     List<String> groups = [];
     UserModel userModel = UserModel(
-      firstName: firstNameController.text.trim(),
-      lastName: lastNameController.text.trim(),
-      phoneNumber: phoneNumberController.text.trim(),
-      carID: carIDController.text.trim(),
-      carColor: carColorController.text.trim(),
-      carBrand: _selectedBrand.toString(),
-      carYear: _selectedYear.toString(),
-      provinces: _selectedProvince.toString(),
-      email: "",
-      wallet: 0,
-      groups: [],
-      role: "user_driver"
-    );
+        firstName: firstNameController.text.trim(),
+        lastName: lastNameController.text.trim(),
+        phoneNumber: phoneNumberController.text.trim(),
+        carID: carIDController.text.trim(),
+        carColor: carColorController.text.trim(),
+        carBrand: _selectedBrand.toString(),
+        carYear: _selectedYear.toString(),
+        provinces: _selectedProvince.toString(),
+        email: "",
+        wallet: 0,
+        groups: [],
+        role: "user_driver");
     ap.saveUserDataToFirebase(
       context: context,
       userModel: userModel,

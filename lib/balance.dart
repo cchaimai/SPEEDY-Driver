@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:speedy/historybank.dart';
+import 'package:speedy/register/profile_beam.dart';
 import 'package:speedy/select.dart';
 
 class BalanceScreen extends StatefulWidget {
@@ -47,7 +48,8 @@ class _BalanceScreenState extends State<BalanceScreen> {
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()));
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),

@@ -1,11 +1,11 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy/check.signin.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:speedy/test/home.dart';
+import 'package:speedy/test/login.dart';
 import 'firebase/auth.dart';
 
 void main() async {
@@ -31,18 +31,17 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         home: AnimatedSplashScreen(
-          duration: 3000,
-          splash: SizedBox(
-            width: 400,
-            height: 400,
-            child: Image.asset(
-              'assets/images/logo-driver.png',
+            duration: 3000,
+            splash: SizedBox(
+              width: 400,
+              height: 400,
+              child: Image.asset(
+                'assets/images/logo-driver.png',
+              ),
             ),
-          ),
-          splashTransition: SplashTransition.fadeTransition,
-          backgroundColor: Colors.white,
-          nextScreen: const checkSignInScreen()
-        ),
+            splashTransition: SplashTransition.fadeTransition,
+            backgroundColor: Colors.white,
+            nextScreen: const homeScreen()),
         debugShowCheckedModeBanner: false,
       ),
     );

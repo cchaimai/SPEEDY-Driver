@@ -7,7 +7,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedy/balance.dart';
+import 'package:speedy/register/profile_beam.dart';
 import 'package:speedy/request.dart';
+import 'package:speedy/test/home.dart';
+import 'package:speedy/widgets/widgets.dart';
+
+import 'firebase/auth.dart';
+import 'helper/helper_function.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -20,6 +26,7 @@ class _MapScreenState extends State<MapScreen> {
   String userId = FirebaseAuth.instance.currentUser!.uid;
   final Completer<GoogleMapController> _controller = Completer();
   StreamSubscription<Position>? positionStream;
+  AuthService authService = AuthService();
   Position? currentLocation;
 
   void getCurrentLocation() async {
@@ -135,7 +142,10 @@ class _MapScreenState extends State<MapScreen> {
                       top: 60,
                       right: 5,
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () async {
+                          //await FirebaseAuth.instance.signOut();
+                          nextScreen(context, ProfileScreen());
+                        },
                         child: Padding(
                           padding: const EdgeInsets.only(right: 5),
                           child: CircleAvatar(

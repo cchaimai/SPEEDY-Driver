@@ -31,7 +31,6 @@ class _loginScreenState extends State<loginScreen> {
   String email = '';
   String password = '';
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -287,7 +286,7 @@ class _loginScreenState extends State<loginScreen> {
         } else if (role == 'driver') {
           nextScreenReplace(context, const MapScreen());
         } else if (role == null) {
-          nextScreenReplace(context, const loginScreen());
+          nextScreenReplace(context, const homeScreen());
         }
 
         formKey.currentState!.reset();

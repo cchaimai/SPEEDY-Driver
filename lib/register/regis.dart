@@ -12,7 +12,7 @@ import 'package:speedy/test/home.dart';
 import 'package:speedy/widgets/widgets.dart';
 
 class registerScreen extends StatefulWidget {
-  const registerScreen({super.key, required User user});
+  const registerScreen({super.key});
 
   @override
   State<registerScreen> createState() => _registerScreenState();
@@ -28,11 +28,6 @@ class _registerScreenState extends State<registerScreen> {
 
   String email = '';
   String password = '';
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -176,7 +171,6 @@ class _registerScreenState extends State<registerScreen> {
                               ),
                               decoration: InputDecoration(
                                 labelText: 'example@gmail.com',
-                                
                                 labelStyle: GoogleFonts.prompt(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w300,
@@ -406,7 +400,10 @@ class _registerScreenState extends State<registerScreen> {
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: email, password: password);
         User user = userCredential.user!;
-        await FirebaseFirestore.instance.collection('dUsers').doc(user.uid).set({
+        await FirebaseFirestore.instance
+            .collection('dUsers')
+            .doc(user.uid)
+            .set({
           'email': email,
         });
         // ignore: use_build_context_synchronously

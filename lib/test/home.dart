@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,10 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:speedy/firebase/auth.dart';
 import 'package:speedy/map.dart';
 import 'package:speedy/register/regis.dart';
-import 'package:speedy/test/regis.dart';
 import 'package:speedy/widgets/global.color.dart';
 import 'package:speedy/widgets/widgets.dart';
 
+import '../register/verification.dart';
 import 'login.dart';
 
 class homeScreen extends StatefulWidget {
@@ -20,8 +21,29 @@ class homeScreen extends StatefulWidget {
 
 class _homeScreenState extends State<homeScreen> {
   @override
+  void initState() {
+    super.initState();
+    checkSignIn(context);
+  }
+
+  checkSignIn(context) async {
+    String? _uid =
+        FirebaseAuth.instance.currentUser?.uid; // ดึง uid จาก user object
+    final userDoc =
+        await FirebaseFirestore.instance.collection('dUsers').doc(_uid).get();
+
+    final role = userDoc.data()?['role'];
+
+    // Display different screens depending on the user's role
+    if (role == 'user_driver') {
+      nextScreenReplace(context, const verificationScreen());
+    } else if (role == 'driver') {
+      nextScreenReplace(context, const MapScreen());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    User user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -116,11 +138,7 @@ class _homeScreenState extends State<homeScreen> {
                         ),
                       ),
                       onPressed: () {
-                        nextScreenReplace(
-                            context,
-                            registerScreen(
-                              user: user,
-                            ));
+                        nextScreenReplace(context, const registerScreen());
                       },
                     ),
                   ],
