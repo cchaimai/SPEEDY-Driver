@@ -400,14 +400,13 @@ class _WorkScreenState extends State<WorkScreen> {
             ElevatedButton(
               onPressed: () {
                 sendETime().then((value) {
-                  Navigator.pushAndRemoveUntil(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EndScreen(
                         workID: widget.workID,
                       ),
                     ),
-                    (route) => route.isFirst,
                   );
                 });
               },
@@ -517,6 +516,7 @@ class _WorkScreenState extends State<WorkScreen> {
         .doc(widget.workID)
         .set({
       "eTimestamp": FieldValue.serverTimestamp(),
+      "status": "Done",
     }, SetOptions(merge: true));
   }
 }

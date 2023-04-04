@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:speedy/firebase/firestore.dart';
+
 import 'package:speedy/firebase/user.model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -85,10 +85,10 @@ class AuthService extends ChangeNotifier {
       // await storeFileDataToStorage("dProfilePic/$_uid", dProfilePic)
       //     .then((value) {
       //   userModel.dProfilePic = value;
-        userModel.groups = groups;
-        userModel.email = _firebaseAuth.currentUser!.email!;
+      userModel.groups = groups;
+      userModel.email = _firebaseAuth.currentUser!.email!;
 
-       print(_uid);
+      print(_uid);
       //});
       _userModel = userModel;
       await _firebaseFirestore
@@ -119,5 +119,4 @@ class AuthService extends ChangeNotifier {
     SharedPreferences s = await SharedPreferences.getInstance();
     await s.setString("user_model", jsonEncode(userModel.toMap()));
   }
-
 }

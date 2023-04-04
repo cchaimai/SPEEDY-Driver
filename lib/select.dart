@@ -87,7 +87,7 @@ class _SelectScreenState extends State<SelectScreen> {
                                 ListTile(
                                   leading: CircleAvatar(
                                     backgroundColor: Colors.transparent,
-                                    backgroundImage: NetworkImage(
+                                    backgroundImage: AssetImage(
                                         snapshot.data!.docs[index]['image']),
                                   ),
                                   title: InkWell(

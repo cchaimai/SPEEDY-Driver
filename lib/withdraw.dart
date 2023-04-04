@@ -79,7 +79,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                       ListTile(
                         leading: CircleAvatar(
                           backgroundColor: Colors.transparent,
-                          backgroundImage: NetworkImage(widget.image),
+                          backgroundImage: AssetImage(widget.image),
                         ),
                         title: Text(widget.name,
                             style: GoogleFonts.prompt(

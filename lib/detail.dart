@@ -389,7 +389,7 @@ class _DetailScreenState extends State<DetailScreen> {
       'dUserID': userId,
       'dName': fname,
       'dCarID': carID,
-      //'status': true,
+      'status': 'Accepted',
     }, SetOptions(merge: true));
 
     DocumentReference requestDocRef =
