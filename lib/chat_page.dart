@@ -11,11 +11,15 @@ class ChatPage extends StatefulWidget {
   final String groupId;
   final String groupName;
   final String userName;
+  final String phone;
+  final String uName;
   const ChatPage(
       {Key? key,
       required this.groupId,
       required this.groupName,
-      required this.userName})
+      required this.userName,
+      required this.phone,
+      required this.uName})
       : super(key: key);
 
   @override
@@ -52,9 +56,9 @@ class _ChatPageState extends State<ChatPage> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
-                // nextScreenReplace(context, HomePage());
+                Navigator.pop(context);
               },
-              icon: const Icon(Icons.home)),
+              icon: const Icon(Icons.arrow_back_ios)),
           actions: [
             IconButton(
                 onPressed: () {
@@ -62,12 +66,12 @@ class _ChatPageState extends State<ChatPage> {
                 },
                 icon: const Icon(Icons.call))
           ],
-          toolbarHeight: 100,
+          toolbarHeight: 80,
           elevation: 0.0,
           centerTitle: true,
           backgroundColor: Colors.transparent,
           title: Text(
-            widget.groupName,
+            widget.uName,
             style:
                 GoogleFonts.prompt(fontWeight: FontWeight.w600, fontSize: 22),
           ),
@@ -134,7 +138,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   call() async {
-    const number = '0928280766';
+    String number = widget.phone;
     bool? res = await FlutterPhoneDirectCaller.callNumber(number);
   }
 

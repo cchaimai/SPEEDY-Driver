@@ -7,6 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:speedy/work.dart';
 
+import 'firebase/database_service.dart';
+
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key, required this.workID, required this.distance});
   final String workID;
@@ -18,8 +20,12 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   StreamSubscription<Position>? positionStream;
   String userId = FirebaseAuth.instance.currentUser!.uid;
-  String? fname;
-  String? carID;
+  String fname = '';
+  String carID = '';
+  String phone = '';
+  String chat = '';
+  String dProfile = '';
+  String? groupId;
 
   Future<void> getUserData() async {
     DocumentReference userDocRef =
@@ -29,6 +35,9 @@ class _DetailScreenState extends State<DetailScreen> {
 
     fname = userDocSnapshot.get('firstName');
     carID = userDocSnapshot.get('carID');
+    phone = userDocSnapshot.get('phoneNumber');
+    // chat = userDocSnapshot.get('chat');
+    dProfile = userDocSnapshot.get('driverProfile');
   }
 
   @override
@@ -111,12 +120,12 @@ class _DetailScreenState extends State<DetailScreen> {
                         style: GoogleFonts.prompt(
                             fontSize: 12, fontWeight: FontWeight.w500),
                       ),
-                      Text(
-                        snapshot.data!.docs.singleWhere(
-                            (doc) => doc.id == widget.workID)['province'],
-                        style: GoogleFonts.prompt(
-                            fontSize: 12, fontWeight: FontWeight.w500),
-                      ),
+                      // Text(
+                      //   snapshot.data!.docs.singleWhere(
+                      //       (doc) => doc.id == widget.workID)['province'],
+                      //   style: GoogleFonts.prompt(
+                      //       fontSize: 12, fontWeight: FontWeight.w500),
+                      // ),
                     ],
                   ),
                 ),
@@ -329,8 +338,16 @@ class _DetailScreenState extends State<DetailScreen> {
                         height: 15,
                       ),
                       ElevatedButton(
-                        onPressed: () {
-                          sendData();
+                        onPressed: () async {
+                          String groupId = await DatabaseService(
+                                  uid: FirebaseAuth.instance.currentUser!.uid)
+                              .createGroup(
+                                  fname,
+                                  FirebaseAuth.instance.currentUser!.uid,
+                                  phone);
+                          sendData(groupId);
+                          print(
+                              '--------------------------$groupId---------------------------------------');
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -340,6 +357,8 @@ class _DetailScreenState extends State<DetailScreen> {
                                     doc.id == widget.workID)['Ulatitude'],
                                 dlong: snapshot.data!.docs.singleWhere((doc) =>
                                     doc.id == widget.workID)['Ulongitude'],
+                                groupId: groupId,
+                                phone: phone,
                               ),
                             ),
                             (route) => false,
@@ -370,7 +389,7 @@ class _DetailScreenState extends State<DetailScreen> {
     );
   }
 
-  Future<void> sendData() async {
+  Future<void> sendData(String group) async {
     positionStream =
         Geolocator.getPositionStream().listen((currentLocation) async {
       await FirebaseFirestore.instance
@@ -389,6 +408,9 @@ class _DetailScreenState extends State<DetailScreen> {
       'dUserID': userId,
       'dName': fname,
       'dCarID': carID,
+      'dPhone': phone,
+      'dProfile': dProfile,
+      'chatID': group,
       'status': 'Accepted',
     }, SetOptions(merge: true));
 

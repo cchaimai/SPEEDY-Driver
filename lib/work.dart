@@ -8,17 +8,24 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:speedy/end.dart';
+import 'package:speedy/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'chat_page.dart';
 
 class WorkScreen extends StatefulWidget {
   const WorkScreen(
       {super.key,
       required this.workID,
       required this.dlat,
-      required this.dlong});
+      required this.dlong,
+      required this.groupId,
+      required this.phone});
   final String workID;
   final double dlat;
   final double dlong;
+  final String groupId;
+  final String phone;
 
   @override
   State<WorkScreen> createState() => _WorkScreenState();
@@ -29,11 +36,15 @@ class _WorkScreenState extends State<WorkScreen> {
   List<LatLng> polylineCoordinates = [];
   StreamSubscription<Position>? positionStream;
   Position? currentLocation;
-  String? name;
-  String? brand;
-  String? carID;
-  String? type;
-  String? energy;
+  String name = '';
+  String dName = '';
+  String brand = '';
+  String carID = '';
+  String type = '';
+  String energy = '';
+  String phone = '';
+  String uPhone = '';
+  String chatID = '';
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
@@ -99,16 +110,24 @@ class _WorkScreenState extends State<WorkScreen> {
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
     name = userDocSnapshot.get('Uname');
+    dName = userDocSnapshot.get('dName');
     brand = userDocSnapshot.get('cartype');
     carID = userDocSnapshot.get('UcarID');
     type = userDocSnapshot.get('chargetype');
     energy = userDocSnapshot.get('energy');
+    phone = userDocSnapshot.get('UPhone');
+    uPhone = phone.replaceFirst('+66', '0');
+    chatID = userDocSnapshot.get('chatID');
+    print('-----------------$phone------------------');
+    print('-----------------$uPhone------------------');
   }
 
   @override
   void initState() {
     super.initState();
     getCurrentLocation();
+    // print(
+    //     '--------------------------${widget.groupId}---------------------------------------');
 
     getUserData();
     _controller.future.then((controller) {
@@ -280,7 +299,18 @@ class _WorkScreenState extends State<WorkScreen> {
                             backgroundColor: const Color(0xff3BB54A),
                             radius: 23,
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                nextScreen(
+                                  context,
+                                  ChatPage(
+                                    groupId: widget.groupId,
+                                    groupName: widget.phone,
+                                    userName: dName,
+                                    phone: uPhone,
+                                    uName: name,
+                                  ),
+                                );
+                              },
                               icon: const Icon(Icons.chat_bubble),
                               color: Colors.white,
                               iconSize: 27,
@@ -296,7 +326,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   bottom: 15,
                   child: ElevatedButton(
                     onPressed: () {
-                      popUb3(context, name!, brand!, carID!, type!, energy!);
+                      popUb3(context, name, brand, carID, type, energy);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -511,6 +541,7 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   Future<void> sendETime() async {
+    FirebaseFirestore.instance.collection('groups').doc(chatID).delete();
     await FirebaseFirestore.instance
         .collection('requests')
         .doc(widget.workID)

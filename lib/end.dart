@@ -118,8 +118,7 @@ class _EndScreenState extends State<EndScreen> {
                             ),
                           ),
                           Text(
-                            snapshot.data!.docs.singleWhere(
-                                (doc) => doc.id == widget.workID)['energy'],
+                            '${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['energy']}kWh',
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                             ),

@@ -57,6 +57,13 @@ class _RequestScreenState extends State<RequestScreen> {
                 child: CircularProgressIndicator(),
               );
             }
+            if (!snapshot.data!.docs.isNotEmpty) {
+              return Center(
+                child: Text("ยังไม่มีงานในขณะนี้",
+                    style: GoogleFonts.prompt(fontSize: 22)),
+              );
+            }
+
             return ListView.builder(
               itemCount: snapshot.data?.docs.length,
               itemBuilder: (context, index) {
@@ -68,8 +75,10 @@ class _RequestScreenState extends State<RequestScreen> {
                           backgroundColor: const Color(0xff3BB54A),
                           radius: 30,
                           child: Text(
-                              "${calculateDistance(widget.lat, widget.long, snapshot.data!.docs[index]['Ulatitude'], snapshot.data!.docs[index]['Ulongitude']).toStringAsFixed(2)} กม.",
-                              style: GoogleFonts.prompt()),
+                            "${calculateDistance(widget.lat, widget.long, snapshot.data!.docs[index]['Ulatitude'], snapshot.data!.docs[index]['Ulongitude']).toStringAsFixed(1)} \nกม.",
+                            style: GoogleFonts.prompt(),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         title: Text(
                             "No.${snapshot.data!.docs[index]['workID']}",
