@@ -21,7 +21,6 @@ class homeScreen extends StatefulWidget {
 class _homeScreenState extends State<homeScreen> {
   @override
   Widget build(BuildContext context) {
-    final ap = Provider.of<AuthService>(context);
     User user = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       body: SingleChildScrollView(
@@ -49,9 +48,7 @@ class _homeScreenState extends State<homeScreen> {
                 //Speedy
                 InkWell(
                   onTap: () {
-                    ap.isSignedIn == true
-                        ? nextScreenReplace(context, const MapScreen())
-                        : nextScreenReplace(context, const loginScreen());
+                    nextScreenReplace(context, const loginScreen());
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

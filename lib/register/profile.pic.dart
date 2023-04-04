@@ -1,29 +1,28 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:provider/provider.dart';
-import 'package:speedy/register/info.card.id.dart';
-import 'package:speedy/register/profile.pic.dart';
+import 'package:speedy/register/card.driver.dart';
 import 'package:speedy/register/verification.dart';
 
 import '../firebase/auth.dart';
 import '../widgets/widgets.dart';
 
-class cardDriverScreen extends StatefulWidget {
-  const cardDriverScreen({super.key});
+class profilePicDriver extends StatefulWidget {
+  const profilePicDriver({super.key});
 
   @override
-  State<cardDriverScreen> createState() => _cardDriverScreenState();
+  State<profilePicDriver> createState() => _profilePicDriverState();
 }
 
-class _cardDriverScreenState extends State<cardDriverScreen> {
+class _profilePicDriverState extends State<profilePicDriver> {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   final picker = ImagePicker();
@@ -51,14 +50,14 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
       _imageUrl = url;
     });
     final String driverCardUrl =
-        await storeFileDataToStorage("driverCard/$_uid", file);
+        await storeFileDataToStorage("driverProfile/$_uid", file);
 
     await FirebaseFirestore.instance.collection('dUsers').doc(_uid).set({
-      'driverCard': driverCardUrl,
+      'driverProfile': driverCardUrl,
     }, SetOptions(merge: true)).then((value) => Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => const profilePicDriver(),
+          builder: (context) => const verificationScreen(),
         ),
         (route) =>
             false)); // ใช้ SetOptions(merge: true) เพื่อไม่ลบฟิลด์ที่มีอยู่แล้วในเอกสาร
@@ -79,7 +78,7 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              nextScreenReplace(context, cardIDScreen(user: user));
+              nextScreenReplace(context, const cardDriverScreen());
             },
             icon: const Icon(
               Icons.arrow_back,
@@ -186,12 +185,23 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            Text(
-                              'ใบขับขี่',
-                              style: GoogleFonts.prompt(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  'รูปถ่าย',
+                                  style: GoogleFonts.prompt(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  ' (ไม่เกิน 6 เดือน)',
+                                  style: GoogleFonts.prompt(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 10),
                             InkWell(
@@ -232,12 +242,13 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
                                       ),
                                     )
                                   : Center(
-                                    child: Container(
-                                        width: 300,
-                                        height: 200,
+                                      child: Container(
+                                        width: 200,
+                                        height: 250,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                           image: _imageFile == null
                                               ? null
                                               : DecorationImage(
@@ -249,7 +260,7 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
                                             ? Icon(Icons.image, size: 50)
                                             : null,
                                       ),
-                                  ),
+                                    ),
                             ),
                             const SizedBox(height: 50),
                             InkWell(
