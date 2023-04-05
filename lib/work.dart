@@ -369,7 +369,7 @@ class _WorkScreenState extends State<WorkScreen> {
                               currentLocation!.longitude,
                               widget.dlat,
                               widget.dlong) <
-                          0.1) {
+                          0.3) {
                         popUb1(context);
                       } else {
                         popUb2(context);

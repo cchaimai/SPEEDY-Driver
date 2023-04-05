@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:speedy/detail.dart';
-import 'package:speedy/map.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key, required this.lat, required this.long});
@@ -119,9 +118,6 @@ class _RequestScreenState extends State<RequestScreen> {
               },
             );
           }),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        sendData();
-      }),
     );
   }
 
@@ -134,22 +130,6 @@ class _RequestScreenState extends State<RequestScreen> {
       "sTimestamp": FieldValue.serverTimestamp(),
       'dlatitude': widget.lat,
       'dlongitude': widget.long,
-    }, SetOptions(merge: true));
-  }
-
-  Future<void> sendData() async {
-    await FirebaseFirestore.instance.collection('requests').doc().set({
-      'Uname': "earth",
-      'chargetype': "Type 2",
-      'energy': "7.2",
-      'Ulatitude': 13.11533244163535,
-      'Ulongitude': 100.92545502431265,
-      'price': 100,
-      'status': 'Wait',
-      'workID': 'SDBASE',
-      'UcarID': 'กก 5555',
-      'cartype': 'tesla',
-      'UPhone': '0836064300'
     }, SetOptions(merge: true));
   }
 }
