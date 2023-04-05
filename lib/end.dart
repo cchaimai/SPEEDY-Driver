@@ -26,13 +26,6 @@ class _EndScreenState extends State<EndScreen> {
             bottomRight: Radius.circular(15),
           ),
         ),
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: FutureBuilder(
           future: FirebaseFirestore.instance.collection("requests").get(),
@@ -118,7 +111,7 @@ class _EndScreenState extends State<EndScreen> {
                             ),
                           ),
                           Text(
-                            '${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['energy']}kWh',
+                            '${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['energy']} kWh',
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                             ),
@@ -155,7 +148,7 @@ class _EndScreenState extends State<EndScreen> {
                             ),
                           ),
                           Text(
-                            "Tip Included",
+                            "รายได้สุทธิ",
                             style: GoogleFonts.prompt(
                               fontWeight: FontWeight.w600,
                               color: const Color(0xff3BB54A),

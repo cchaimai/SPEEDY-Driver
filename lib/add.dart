@@ -15,13 +15,14 @@ class _AddScreenState extends State<AddScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         backgroundColor: const Color(0xff1f1f1f),
         centerTitle: true,
         title: Text("เพิ่มบัญชีธนาคาร", style: GoogleFonts.prompt()),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
         leading: IconButton(
@@ -31,12 +32,6 @@ class _AddScreenState extends State<AddScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
@@ -97,24 +92,25 @@ class _AddScreenState extends State<AddScreen> {
     );
   }
 
-  ListTile bankList(
+  InkWell bankList(
       BuildContext context, String image, String name, Color color) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        backgroundImage: AssetImage(image),
+    return InkWell(
+      highlightColor: color,
+      onTap: () {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Add2Screen(image: image, color: color, bank: name)));
+      },
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          backgroundImage: AssetImage(image),
+        ),
+        title: Text(name,
+            style: GoogleFonts.prompt(color: const Color(0xff898888))),
       ),
-      title: InkWell(
-          highlightColor: color,
-          onTap: () {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Add2Screen(image: image, color: color, bank: name)));
-          },
-          child: Text(name,
-              style: GoogleFonts.prompt(color: const Color(0xff898888)))),
     );
   }
 

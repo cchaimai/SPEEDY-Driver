@@ -14,28 +14,9 @@ class _WithDraw2ScreenState extends State<WithDraw2Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xff1f1f1f),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
-      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 200),
+          padding: const EdgeInsets.only(top: 270),
           child: Center(
             child: Column(
               children: [

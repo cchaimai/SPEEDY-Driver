@@ -20,14 +20,6 @@ class HelpCenter extends StatelessWidget {
         centerTitle: true, //กลาง
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(23.0))),
-
-        actions: <Widget>[
-          //แจ้งเตือน
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Container(
         padding: const EdgeInsets.only(
@@ -261,13 +253,6 @@ class Accident extends StatelessWidget {
         centerTitle: true, //กลาง
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(23.0))),
-        actions: <Widget>[
-          //แจ้งเตือน
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Container(
         padding: const EdgeInsets.only(
@@ -521,13 +506,6 @@ class _OfferState extends State<Offer> {
           shape: const RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(23.0))),
-          actions: <Widget>[
-            //แจ้งเตือน
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-          ],
         ),
         body: Container(
             padding: const EdgeInsets.only(
@@ -645,13 +623,6 @@ class Problem extends StatelessWidget {
         centerTitle: true, //กลาง
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(23.0))),
-        actions: <Widget>[
-          //แจ้งเตือน
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Container(
         padding: const EdgeInsets.only(
@@ -848,13 +819,6 @@ class Other extends StatelessWidget {
           shape: const RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(23.0))),
-          actions: <Widget>[
-            //แจ้งเตือน
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-          ],
         ),
         body: Container(
           child: Stack(children: <Widget>[

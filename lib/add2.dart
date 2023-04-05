@@ -30,13 +30,14 @@ class _Add2ScreenState extends State<Add2Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         backgroundColor: const Color(0xff1f1f1f),
         centerTitle: true,
         title: Text("เพิ่มบัญชีธนาคาร", style: GoogleFonts.prompt()),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
         leading: IconButton(
@@ -46,12 +47,6 @@ class _Add2ScreenState extends State<Add2Screen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: Form(
         key: fromKey,
@@ -121,7 +116,11 @@ class _Add2ScreenState extends State<Add2Screen> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'กรุณากรอกเลขบัญชี';
-                          } else if (value.length != 10) {
+                          } else if (widget.bank == 'ออมสิน' &&
+                              value.length != 12) {
+                            return 'กรุณากรอกเลขบัญชีให้ครบ';
+                          } else if (widget.bank != 'ออมสิน' &&
+                              value.length != 10) {
                             return 'กรุณากรอกเลขบัญชีให้ครบ';
                           }
                           return null;
@@ -129,11 +128,11 @@ class _Add2ScreenState extends State<Add2Screen> {
                         onSaved: (value) {
                           account = value!;
                         },
-                        maxLength: 10,
+                        maxLength: widget.bank == 'ออมสิน' ? 12 : 10,
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.right,
                         decoration: InputDecoration(
-                          hintText: "กรอกเลขบัญชีเลขบัญชี",
+                          hintText: "กรอกเลขบัญชี",
                           hintStyle:
                               GoogleFonts.prompt(color: Colors.grey.shade400),
                           focusedBorder: const UnderlineInputBorder(

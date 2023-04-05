@@ -9,11 +9,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:speedy/balance.dart';
 import 'package:speedy/register/profile_beam.dart';
 import 'package:speedy/request.dart';
-import 'package:speedy/test/home.dart';
 import 'package:speedy/widgets/widgets.dart';
-
 import 'firebase/auth.dart';
-import 'helper/helper_function.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -24,10 +21,9 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   String userId = FirebaseAuth.instance.currentUser!.uid;
-  final Completer<GoogleMapController> controller = Completer();
+
   GoogleMapController? mapController;
   StreamSubscription<Position>? positionStream;
-  AuthService authService = AuthService();
   Position? currentLocation;
 
   void getCurrentLocation() async {
@@ -38,7 +34,6 @@ class _MapScreenState extends State<MapScreen> {
     if (!serviceEnabled) {
       return Future.error('Location services are disabled.');
     }
-
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -46,7 +41,6 @@ class _MapScreenState extends State<MapScreen> {
         return Future.error('Location permissions are denied');
       }
     }
-
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
@@ -63,7 +57,6 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     getCurrentLocation();
-    print("--------------$userId----------------------");
   }
 
   @override
@@ -75,7 +68,6 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('dUsers').snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -104,7 +96,6 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                       },
                       onMapCreated: (controller) {
-                        //controller.complete(controller);
                         mapController = controller;
                       },
                     ),
@@ -144,8 +135,7 @@ class _MapScreenState extends State<MapScreen> {
                       top: 60,
                       right: 10,
                       child: InkWell(
-                        onTap: () async {
-                          //await FirebaseAuth.instance.signOut();
+                        onTap: () {
                           nextScreen(context, const ProfileScreen());
                         },
                         child: CircleAvatar(

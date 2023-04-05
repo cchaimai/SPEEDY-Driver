@@ -69,7 +69,7 @@ class _EditProfileState extends State<EditProfile> {
   void updateProfile(String newfirstName, String newlastName, String newEmail,
       String newphoneNumber) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
-    FirebaseFirestore.instance.collection('mUsers').doc(userId).update({
+    FirebaseFirestore.instance.collection('dUsers').doc(userId).update({
       'firstName': newfirstName,
       'lastName': newlastName,
       'email': newEmail,

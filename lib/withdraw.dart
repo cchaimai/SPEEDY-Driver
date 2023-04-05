@@ -32,13 +32,14 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         backgroundColor: const Color(0xff1f1f1f),
         centerTitle: true,
         title: Text("ถอนเงิน", style: GoogleFonts.prompt()),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
         leading: IconButton(
@@ -48,12 +49,6 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('dUsers').snapshots(),

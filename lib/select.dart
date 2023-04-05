@@ -21,13 +21,14 @@ class _SelectScreenState extends State<SelectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         backgroundColor: const Color(0xff1f1f1f),
         centerTitle: true,
         title: Text("บัญชีธนาคาร", style: GoogleFonts.prompt()),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
         leading: IconButton(
@@ -37,12 +38,6 @@ class _SelectScreenState extends State<SelectScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance
@@ -183,7 +178,7 @@ class _SelectScreenState extends State<SelectScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                            "${snapshot.data!.docs[index]['account'].substring(0, 6)}XXXX ",
+                                            "${snapshot.data!.docs[index]['account'].substring(0, snapshot.data!.docs[index]['account'].length - 4)}XXXX",
                                             style: GoogleFonts.prompt(
                                               fontWeight: FontWeight.w500,
                                             )),

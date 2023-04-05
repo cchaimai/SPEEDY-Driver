@@ -30,6 +30,7 @@ class _RequestScreenState extends State<RequestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         centerTitle: true,
         title: Text("request", style: GoogleFonts.prompt()),
         backgroundColor: const Color(0xff1f1f1f),
@@ -41,8 +42,8 @@ class _RequestScreenState extends State<RequestScreen> {
         ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
       ),

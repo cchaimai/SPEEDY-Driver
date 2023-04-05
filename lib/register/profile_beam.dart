@@ -64,20 +64,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           toolbarHeight: 84, //ความสูง bar บน
           centerTitle: true, //กลาง
           shape: const RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.vertical(bottom: Radius.circular(23.0))),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(23))),
           leading: IconButton(
               onPressed: () {
-                nextScreenReplace(context, const MapScreen());
+                Navigator.pop(context);
               },
-              icon: const Icon(Icons.home)),
-          actions: <Widget>[
-            //แจ้งเตือน
-            IconButton(
-              icon: const Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-          ],
+              icon: const Icon(Icons.arrow_back_ios)),
         ),
         body: Column(
           children: [
@@ -146,14 +138,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // ignore: prefer_const_literals_to_create_immutables
                   children: [
                     const Icon(
-                      Icons.account_balance_rounded,
+                      Icons.account_balance_wallet_outlined,
                       size: 22,
                       color: Colors.black,
                     ),
                     const SizedBox(width: 20),
                     const Expanded(
                         child: Text(
-                      "บัญชีธนาคาร",
+                      "กระเป๋าตัง",
                       style: TextStyle(color: Colors.black),
                     )),
                   ],

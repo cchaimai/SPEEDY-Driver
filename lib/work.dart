@@ -6,7 +6,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:speedy/end.dart';
 import 'package:speedy/widgets/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,7 +31,6 @@ class WorkScreen extends StatefulWidget {
 }
 
 class _WorkScreenState extends State<WorkScreen> {
-  final Completer<GoogleMapController> _controller = Completer();
   GoogleMapController? mapController;
   List<LatLng> polylineCoordinates = [];
   StreamSubscription<Position>? positionStream;
@@ -119,21 +117,13 @@ class _WorkScreenState extends State<WorkScreen> {
     phone = userDocSnapshot.get('UPhone');
     uPhone = phone.replaceFirst('+66', '0');
     chatID = userDocSnapshot.get('chatID');
-    print('-----------------$phone------------------');
-    print('-----------------$uPhone------------------');
   }
 
   @override
   void initState() {
     super.initState();
     getCurrentLocation();
-    // print(
-    //     '--------------------------${widget.groupId}---------------------------------------');
-
     getUserData();
-    _controller.future.then((controller) {
-      controller.showMarkerInfoWindow(const MarkerId('destination'));
-    });
   }
 
   @override
@@ -155,12 +145,6 @@ class _WorkScreenState extends State<WorkScreen> {
             bottomRight: Radius.circular(15),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: currentLocation == null
           ? const Center(child: CircularProgressIndicator())
@@ -201,7 +185,6 @@ class _WorkScreenState extends State<WorkScreen> {
                       ),
                     },
                     onMapCreated: (controller) {
-                      //_controller.complete(controller);
                       mapController = controller;
                     },
                   ),
@@ -211,7 +194,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   left: 0,
                   right: 0,
                   child: Container(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    padding: const EdgeInsets.only(left: 10, right: 20),
                     margin: const EdgeInsets.only(
                       top: 10,
                       bottom: 10,
@@ -255,7 +238,7 @@ class _WorkScreenState extends State<WorkScreen> {
                           ),
                         ),
                         const VerticalDivider(
-                          width: 30,
+                          width: 40,
                           indent: 0,
                           endIndent: 0,
                           color: Colors.grey,
@@ -284,39 +267,23 @@ class _WorkScreenState extends State<WorkScreen> {
                         ),
                         CircleAvatar(
                           backgroundColor: const Color(0xff3BB54A),
-                          radius: 23,
+                          radius: 25,
                           child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.phone_enabled),
+                            onPressed: () {
+                              nextScreen(
+                                context,
+                                ChatPage(
+                                  groupId: widget.groupId,
+                                  groupName: widget.phone,
+                                  userName: dName,
+                                  phone: uPhone,
+                                  uName: name,
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.chat_bubble),
                             color: Colors.white,
-                            iconSize: 30,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: CircleAvatar(
-                            backgroundColor: const Color(0xff3BB54A),
-                            radius: 23,
-                            child: IconButton(
-                              onPressed: () {
-                                nextScreen(
-                                  context,
-                                  ChatPage(
-                                    groupId: widget.groupId,
-                                    groupName: widget.phone,
-                                    userName: dName,
-                                    phone: uPhone,
-                                    uName: name,
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.chat_bubble),
-                              color: Colors.white,
-                              iconSize: 27,
-                            ),
+                            iconSize: 27,
                           ),
                         ),
                       ],
@@ -460,13 +427,14 @@ class _WorkScreenState extends State<WorkScreen> {
             ElevatedButton(
               onPressed: () {
                 sendETime().then((value) {
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EndScreen(
                         workID: widget.workID,
                       ),
                     ),
+                    (route) => false,
                   );
                 });
               },

@@ -19,13 +19,14 @@ class _HistoryBankScreenState extends State<HistoryBankScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         backgroundColor: const Color(0xff1f1f1f),
         centerTitle: true,
         title: Text("ประวัติรายการ", style: GoogleFonts.prompt()),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
         leading: IconButton(
@@ -35,12 +36,6 @@ class _HistoryBankScreenState extends State<HistoryBankScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: FutureBuilder(
           future: FirebaseFirestore.instance

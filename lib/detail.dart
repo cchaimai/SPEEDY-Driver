@@ -248,7 +248,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   style: text1(),
                                 ),
                                 Text(
-                                  "${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['energy']}kWh",
+                                  "${snapshot.data!.docs.singleWhere((doc) => doc.id == widget.workID)['energy']} kWh",
                                   style: text2(),
                                 ),
                               ],
@@ -338,7 +338,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         height: 15,
                       ),
                       ElevatedButton(
-                        onPressed: () async {
+                        onPressed: () {
                           // String groupId = await DatabaseService(
                           //         uid: FirebaseAuth.instance.currentUser!.uid)
                           //     .createGroup(
@@ -346,8 +346,6 @@ class _DetailScreenState extends State<DetailScreen> {
                           //         FirebaseAuth.instance.currentUser!.uid,
                           //         phone);
                           sendGroup().then((value) {
-                            print(
-                                '-----------------$value----------------------');
                             sendData(value);
                             Navigator.pushAndRemoveUntil(
                               context,

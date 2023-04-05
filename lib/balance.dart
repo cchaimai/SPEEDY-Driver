@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:speedy/historybank.dart';
-import 'package:speedy/register/profile_beam.dart';
 import 'package:speedy/select.dart';
 
 class BalanceScreen extends StatefulWidget {
@@ -37,13 +36,14 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 84,
         backgroundColor: const Color(0xff1f1f1f),
         centerTitle: true,
-        title: Text("balance", style: GoogleFonts.prompt()),
+        title: Text("กระเป๋าตัง", style: GoogleFonts.prompt()),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
+            bottomLeft: Radius.circular(23),
+            bottomRight: Radius.circular(23),
           ),
         ),
         leading: IconButton(
@@ -52,12 +52,6 @@ class _BalanceScreenState extends State<BalanceScreen> {
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined),
-          )
-        ],
       ),
       body: FutureBuilder(
           future: FirebaseFirestore.instance
