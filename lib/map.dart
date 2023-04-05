@@ -24,7 +24,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   String userId = FirebaseAuth.instance.currentUser!.uid;
-  final Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> controller = Completer();
+  GoogleMapController? mapController;
   StreamSubscription<Position>? positionStream;
   AuthService authService = AuthService();
   Position? currentLocation;
@@ -102,8 +103,9 @@ class _MapScreenState extends State<MapScreen> {
                               currentLocation!.longitude),
                         ),
                       },
-                      onMapCreated: (mapController) {
-                        _controller.complete(mapController);
+                      onMapCreated: (controller) {
+                        //controller.complete(controller);
+                        mapController = controller;
                       },
                     ),
                     Positioned(
@@ -140,23 +142,48 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Positioned(
                       top: 60,
-                      right: 5,
+                      right: 10,
                       child: InkWell(
                         onTap: () async {
                           //await FirebaseAuth.instance.signOut();
-                          nextScreen(context, ProfileScreen());
+                          nextScreen(context, const ProfileScreen());
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(snapshot.data!.docs
-                                    .singleWhere((doc) => doc.id == userId)[
-                                'driverProfile']),
-                            radius: 30,
-                          ),
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(snapshot.data!.docs
+                              .singleWhere(
+                                  (doc) => doc.id == userId)['driverProfile']),
+                          radius: 30,
                         ),
                       ),
-                    )
+                    ),
+                    Positioned(
+                      right: 10,
+                      bottom: 16,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          mapController!.animateCamera(
+                            CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                target: LatLng(currentLocation!.latitude,
+                                    currentLocation!.longitude),
+                                zoom: 15.0,
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          fixedSize: const Size(50, 50),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                        ),
+                        child: const Icon(
+                          Icons.my_location,
+                          color: Colors.black,
+                          size: 30,
+                        ),
+                      ),
+                    ),
                   ]);
           }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

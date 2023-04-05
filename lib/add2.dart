@@ -195,7 +195,7 @@ class _Add2ScreenState extends State<Add2Screen> {
       style: GoogleFonts.prompt(),
     ),
     backgroundColor: const Color(0xff3BB54A),
-    duration: const Duration(seconds: 3),
+    duration: const Duration(seconds: 2),
   );
 
   Future<void> createBank(String name, String account, String image) async {

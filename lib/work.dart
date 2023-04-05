@@ -33,6 +33,7 @@ class WorkScreen extends StatefulWidget {
 
 class _WorkScreenState extends State<WorkScreen> {
   final Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController? mapController;
   List<LatLng> polylineCoordinates = [];
   StreamSubscription<Position>? positionStream;
   Position? currentLocation;
@@ -199,8 +200,9 @@ class _WorkScreenState extends State<WorkScreen> {
                         icon: BitmapDescriptor.defaultMarkerWithHue(127),
                       ),
                     },
-                    onMapCreated: (mapController) {
-                      _controller.complete(mapController);
+                    onMapCreated: (controller) {
+                      //_controller.complete(controller);
+                      mapController = controller;
                     },
                   ),
                 ),
@@ -336,6 +338,34 @@ class _WorkScreenState extends State<WorkScreen> {
                     ),
                     child: const Icon(
                       Icons.list_alt,
+                      color: Colors.black,
+                      size: 30,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 10,
+                  bottom: 75,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      mapController!.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: LatLng(currentLocation!.latitude,
+                                currentLocation!.longitude),
+                            zoom: 15.0,
+                          ),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      fixedSize: const Size(50, 50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: const Icon(
+                      Icons.my_location,
                       color: Colors.black,
                       size: 30,
                     ),

@@ -117,7 +117,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ShowProfile()),
+                      MaterialPageRoute(
+                          builder: (context) => const ShowProfile()),
                     );
                   },
                   child: const Icon(
@@ -139,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(30)),
                 ),
                 onPressed: () {
-                  nextScreenReplace(context, BalanceScreen());
+                  nextScreen(context, const BalanceScreen());
                 },
                 child: Row(
                   // ignore: prefer_const_literals_to_create_immutables

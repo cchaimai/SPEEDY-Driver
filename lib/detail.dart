@@ -339,30 +339,49 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          String groupId = await DatabaseService(
-                                  uid: FirebaseAuth.instance.currentUser!.uid)
-                              .createGroup(
-                                  fname,
-                                  FirebaseAuth.instance.currentUser!.uid,
-                                  phone);
-                          sendData(groupId);
-                          print(
-                              '--------------------------$groupId---------------------------------------');
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WorkScreen(
-                                workID: widget.workID,
-                                dlat: snapshot.data!.docs.singleWhere((doc) =>
-                                    doc.id == widget.workID)['Ulatitude'],
-                                dlong: snapshot.data!.docs.singleWhere((doc) =>
-                                    doc.id == widget.workID)['Ulongitude'],
-                                groupId: groupId,
-                                phone: phone,
+                          // String groupId = await DatabaseService(
+                          //         uid: FirebaseAuth.instance.currentUser!.uid)
+                          //     .createGroup(
+                          //         fname,
+                          //         FirebaseAuth.instance.currentUser!.uid,
+                          //         phone);
+                          sendGroup().then((value) {
+                            print(
+                                '-----------------$value----------------------');
+                            sendData(value);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => WorkScreen(
+                                  workID: widget.workID,
+                                  dlat: snapshot.data!.docs.singleWhere((doc) =>
+                                      doc.id == widget.workID)['Ulatitude'],
+                                  dlong: snapshot.data!.docs.singleWhere(
+                                          (doc) => doc.id == widget.workID)[
+                                      'Ulongitude'],
+                                  groupId: value,
+                                  phone: phone,
+                                ),
                               ),
-                            ),
-                            (route) => false,
-                          );
+                              (route) => false,
+                            );
+                          });
+                          // sendData(groupId);
+                          // Navigator.pushAndRemoveUntil(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => WorkScreen(
+                          //       workID: widget.workID,
+                          //       dlat: snapshot.data!.docs.singleWhere((doc) =>
+                          //           doc.id == widget.workID)['Ulatitude'],
+                          //       dlong: snapshot.data!.docs.singleWhere((doc) =>
+                          //           doc.id == widget.workID)['Ulongitude'],
+                          //       groupId: groupId,
+                          //       phone: phone,
+                          //     ),
+                          //   ),
+                          //   (route) => false,
+                          // );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff3BB54A),
@@ -387,6 +406,11 @@ class _DetailScreenState extends State<DetailScreen> {
         },
       ),
     );
+  }
+
+  Future<String> sendGroup() async {
+    return await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+        .createGroup(fname, FirebaseAuth.instance.currentUser!.uid, phone);
   }
 
   Future<void> sendData(String group) async {
@@ -417,13 +441,14 @@ class _DetailScreenState extends State<DetailScreen> {
     DocumentReference requestDocRef =
         FirebaseFirestore.instance.collection('requests').doc(widget.workID);
 
+    StreamSubscription<DocumentSnapshot>? requestSubscription;
     Stream<DocumentSnapshot> requestDocStream = requestDocRef.snapshots();
 
-    requestDocStream.listen((event) {
+    requestSubscription = requestDocStream.listen((event) {
       Map<String, dynamic> requestData = event.data() as Map<String, dynamic>;
       if (requestData['status'] == 'Done') {
         positionStream?.cancel();
-        positionStream = null;
+        requestSubscription?.cancel();
       }
     });
   }

@@ -238,7 +238,7 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
       style: GoogleFonts.prompt(),
     ),
     backgroundColor: const Color(0xff3BB54A),
-    duration: const Duration(seconds: 3),
+    duration: const Duration(seconds: 2),
   );
 
   Future<void> createBankHistory(String account, num amount) async {

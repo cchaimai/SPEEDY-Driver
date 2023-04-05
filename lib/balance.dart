@@ -48,8 +48,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
         ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()));
+            Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),

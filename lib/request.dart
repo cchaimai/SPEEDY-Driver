@@ -138,16 +138,17 @@ class _RequestScreenState extends State<RequestScreen> {
 
   Future<void> sendData() async {
     await FirebaseFirestore.instance.collection('requests').doc().set({
-      'name': "earth",
-      'type': "Type 2",
-      'energy': "7.2kW",
-      'latitude': 13.11533244163535,
-      'longitude': 100.92545502431265,
-      'earning': 100,
-      'status': false,
+      'Uname': "earth",
+      'chargetype': "Type 2",
+      'energy': "7.2",
+      'Ulatitude': 13.11533244163535,
+      'Ulongitude': 100.92545502431265,
+      'price': 100,
+      'status': 'Wait',
       'workID': 'SDBASE',
-      'carID': 'กก 5555',
-      'brand': 'tesla',
+      'UcarID': 'กก 5555',
+      'cartype': 'tesla',
+      'UPhone': '0836064300'
     }, SetOptions(merge: true));
   }
 }
