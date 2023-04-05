@@ -135,16 +135,29 @@ class _MapScreenState extends State<MapScreen> {
                       top: 60,
                       right: 10,
                       child: InkWell(
-                        onTap: () {
-                          nextScreen(context, const ProfileScreen());
-                        },
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(snapshot.data!.docs
-                              .singleWhere(
-                                  (doc) => doc.id == userId)['driverProfile']),
-                          radius: 30,
-                        ),
-                      ),
+                          onTap: () {
+                            nextScreen(context, const ProfileScreen());
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(snapshot.data!.docs
+                                      .singleWhere((doc) => doc.id == userId)[
+                                  'driverProfile']),
+                              radius: 30,
+                            ),
+                          )),
                     ),
                     Positioned(
                       right: 10,

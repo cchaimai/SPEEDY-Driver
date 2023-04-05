@@ -232,12 +232,20 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
                                       ),
                                     )
                                   : Center(
-                                    child: Container(
+                                      child: Container(
                                         width: 300,
                                         height: 200,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.1),
+                                              blurRadius: 10,
+                                            ),
+                                          ],
                                           image: _imageFile == null
                                               ? null
                                               : DecorationImage(
@@ -249,12 +257,47 @@ class _cardDriverScreenState extends State<cardDriverScreen> {
                                             ? Icon(Icons.image, size: 50)
                                             : null,
                                       ),
-                                  ),
+                                    ),
                             ),
                             const SizedBox(height: 50),
                             InkWell(
-                              onTap: () => _uploadImage(
-                                  _imageFile!), // ใช้ _imageFile แทน file
+                              onTap: () {
+                                if (_imageFile == null) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          "กรุณาอัปโหลดไฟล์",
+                                          style: GoogleFonts.prompt(
+                                            fontSize: 18,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            child: Text(
+                                              "ตกลง",
+                                              style: GoogleFonts.prompt(
+                                                fontSize: 16,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  _uploadImage(_imageFile!);
+                                }
+                              },
+                              // ใช้ _imageFile แทน file
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

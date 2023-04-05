@@ -30,6 +30,8 @@ class _informationScreenState extends State<informationScreen> {
   bool _isChecked = false;
   File? image;
 
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneNumberController = TextEditingController();
@@ -187,19 +189,43 @@ class _informationScreenState extends State<informationScreen> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Confirm'),
-                  content: const Text('Are you sure you want to go back?'),
+                  title: Text(
+                    'Confirm',
+                    style: GoogleFonts.prompt(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black),
+                  ),
+                  content: Text(
+                    'Are you sure you want to go back?',
+                    style: GoogleFonts.prompt(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black),
+                  ),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.pop(context, 'Cancel'),
-                      child: const Text('Cancel'),
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.prompt(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red),
+                      ),
                     ),
                     TextButton(
                       onPressed: () => Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const registerScreen())),
-                      child: const Text('OK'),
+                      child: Text(
+                        'OK',
+                        style: GoogleFonts.prompt(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.green),
+                      ),
                     ),
                   ],
                 ),
@@ -237,569 +263,712 @@ class _informationScreenState extends State<informationScreen> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: isLoading == true
-            ? const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.green,
-                ),
-              )
-            : SingleChildScrollView(
-                child: Center(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        width: 350,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: const [
-                            Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 60,
-                            ),
-                            Icon(
-                              Icons.horizontal_rule,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            Icon(
-                              Icons.check_circle,
-                              color: Colors.grey,
-                              size: 60,
-                            ),
-                            Icon(
-                              Icons.horizontal_rule,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            Icon(
-                              Icons.check_circle,
-                              color: Colors.grey,
-                              size: 60,
-                            ),
-                            Icon(
-                              Icons.horizontal_rule,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            Icon(
-                              Icons.check_circle,
-                              color: Colors.grey,
-                              size: 60,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      SizedBox(
-                        width: 350,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'ข้อมูลส่วนบุคคลและรายละเอียดรถยนต์',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
+      body: Form(
+        key: formKey,
+        child: SafeArea(
+          child: isLoading == true
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.green,
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30),
+                        SizedBox(
+                          width: 350,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: const [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 60,
                               ),
-                              const SizedBox(height: 30),
-                              // Column(
-                              //   children: [
-                              //     InkWell(
-                              //       onTap: () => selectImage(),
-                              //       child: image == null
-                              //           ? const CircleAvatar(
-                              //               backgroundColor: Colors.grey,
-                              //               radius: 50,
-                              //               child: Icon(
-                              //                 Icons.account_circle,
-                              //                 size: 50,
-                              //                 color: Colors.white,
-                              //               ),
-                              //             )
-                              //           : CircleAvatar(
-                              //               backgroundImage: FileImage(image!),
-                              //               radius: 50,
-                              //             ),
-                              //     ),
-                              //     const SizedBox(height: 5),
-                              //     InkWell(
-                              //       onTap: () => selectImage(),
-                              //       child: Text(
-                              //         'เพิ่มรูปภาพ',
-                              //         style: GoogleFonts.prompt(
-                              //           color: Colors.grey.shade600,
-                              //           fontSize: 12,
-                              //           fontWeight: FontWeight.w400,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ],
-                              // ),
-                              // const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Text(
-                                    'ชื่อ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.horizontal_rule,
+                                color: Colors.grey,
+                                size: 25,
                               ),
-                              const SizedBox(height: 5),
-                              TextFormField(
-                                cursorColor: Colors.green,
-                                controller: firstNameController,
-                                decoration: InputDecoration(
-                                  labelText: 'First Name',
-                                  labelStyle: GoogleFonts.prompt(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                  ),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.grey,
+                                size: 60,
                               ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'นามสกุล',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.horizontal_rule,
+                                color: Colors.grey,
+                                size: 25,
                               ),
-                              const SizedBox(height: 5),
-                              TextFormField(
-                                cursorColor: Colors.green,
-                                controller: lastNameController,
-                                decoration: InputDecoration(
-                                  labelText: 'Last Name',
-                                  labelStyle: GoogleFonts.prompt(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                  ),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.grey,
+                                size: 60,
                               ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'เบอร์โทร',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
+                              Icon(
+                                Icons.horizontal_rule,
+                                color: Colors.grey,
+                                size: 25,
                               ),
-                              const SizedBox(height: 5),
-                              TextFormField(
-                                cursorColor: Colors.green,
-                                keyboardType: TextInputType.phone,
-                                controller: phoneNumberController,
-                                decoration: InputDecoration(
-                                  labelText: '0912345678',
-                                  labelStyle: GoogleFonts.prompt(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                  ),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              CheckboxListTile(
-                                title: Text(
-                                  'ฉันมีรถยนต์ที่สามารถขับได้',
-                                  style: GoogleFonts.prompt(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                value: _isChecked,
-                                activeColor: Colors.green,
-                                onChanged: (bool? value) {
-                                  setState(() {
-                                    _isChecked = value!;
-                                  });
-                                },
-                                controlAffinity: ListTileControlAffinity
-                                    .leading, // กำหนดให้ checkbox อยู่ด้านซ้ายของข้อความ title
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'แบรนด์ยานพาหนะ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  labelText: 'Brand',
-                                  labelStyle: GoogleFonts.prompt(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                                value: _selectedBrand,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    _selectedBrand = newValue;
-                                  });
-                                  print(_selectedBrand);
-                                },
-                                items: brands.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                              const SizedBox(height: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    ' หากไม่พบรุ่นยานพาหนะของท่านในรายชื่อ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        ' โปรดแจ้งให้เราทราบได้ที่ ',
-                                        style: GoogleFonts.prompt(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {},
-                                        child: Text(
-                                          'info@speedy.th',
-                                          style: GoogleFonts.prompt(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.lightGreen),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'ทะเบียนรถ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              TextFormField(
-                                controller: carIDController,
-                                cursorColor: Colors.green,
-                                decoration: InputDecoration(
-                                  labelText: 'ab 1234',
-                                  labelStyle: GoogleFonts.prompt(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                  ),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'สีของยานพาหนะ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  labelText: 'Colors',
-                                  labelStyle: GoogleFonts.prompt(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                                value: _selectedColors,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    _selectedColors = newValue;
-                                  });
-                                  print(_selectedColors);
-                                },
-                                items: carColors.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'ปีของยานพาหนะ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  labelText: 'Year',
-                                  labelStyle: GoogleFonts.prompt(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                                value: _selectedYear,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    _selectedYear = newValue;
-                                  });
-                                  print(_selectedYear);
-                                },
-                                items: years.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Text(
-                                    'จังหวัดที่ลงทะเบียน',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                  labelText: 'provinces',
-                                  labelStyle: GoogleFonts.prompt(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey),
-                                  border: const OutlineInputBorder(),
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20)),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                                value: _selectedProvince,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    _selectedProvince = newValue;
-                                  });
-                                  print(_selectedProvince);
-                                },
-                                items: provinces.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.grey,
+                                size: 60,
                               ),
                             ],
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      InkWell(
-                        onTap: () => storeData(),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              height: 50,
-                              width: 180,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(30),
-                                border:
-                                    Border.all(width: 1, color: Colors.grey),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    blurRadius: 10,
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'ถัดไป ',
-                                    style: GoogleFonts.prompt(
-                                      fontSize: 15,
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          width: 350,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'ข้อมูลส่วนบุคคลและรายละเอียดรถยนต์',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 30),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'ชื่อ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                TextFormField(
+                                  cursorColor: Colors.green,
+                                  controller: firstNameController,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: 'First Name',
+                                    labelStyle: GoogleFonts.prompt(
+                                      fontSize: 14,
                                       fontWeight: FontWeight.w500,
-                                      color: Colors.white,
+                                      color: Colors.grey,
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
                                     ),
                                   ),
-                                  const Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.white,
-                                  )
-                                ],
-                              ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'กรุณากรอกชื่อจริง';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'นามสกุล',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                TextFormField(
+                                  cursorColor: Colors.green,
+                                  controller: lastNameController,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: 'Last Name',
+                                    labelStyle: GoogleFonts.prompt(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey,
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'กรุณากรอกนามสกุล';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'เบอร์โทร',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                TextFormField(
+                                  cursorColor: Colors.green,
+                                  keyboardType: TextInputType.phone,
+                                  controller: phoneNumberController,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: '0912345678',
+                                    labelStyle: GoogleFonts.prompt(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey,
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'กรุณากรอกเบอร์โทรศัพท์';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 10),
+                                CheckboxListTile(
+                                  title: Text(
+                                    'ฉันมีรถยนต์ที่สามารถขับได้',
+                                    style: GoogleFonts.prompt(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  value: _isChecked,
+                                  activeColor: Colors.green,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _isChecked = value!;
+                                    });
+                                  },
+                                  controlAffinity: ListTileControlAffinity
+                                      .leading, // กำหนดให้ checkbox อยู่ด้านซ้ายของข้อความ title
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'แบรนด์ยานพาหนะ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                DropdownButtonFormField<String>(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: 'Brand',
+                                    labelStyle: GoogleFonts.prompt(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (_selectedBrand == null ||
+                                        _selectedBrand!.isEmpty) {
+                                      return 'กรุณาเลือกยี่ห้อรถยนต์';
+                                    }
+                                    return null;
+                                  },
+                                  value: _selectedBrand,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _selectedBrand = newValue;
+                                    });
+                                  },
+                                  items: brands.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox(height: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      ' หากไม่พบรุ่นยานพาหนะของท่านในรายชื่อ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          ' โปรดแจ้งให้เราทราบได้ที่ ',
+                                          style: GoogleFonts.prompt(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () {},
+                                          child: Text(
+                                            'info@speedy.th',
+                                            style: GoogleFonts.prompt(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.lightGreen),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'ทะเบียนรถ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                TextFormField(
+                                  controller: carIDController,
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  cursorColor: Colors.green,
+                                  decoration: InputDecoration(
+                                    labelText: 'ab 1234',
+                                    labelStyle: GoogleFonts.prompt(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey,
+                                    ),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'กรุณากรอกทะเบียนรถ';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'สีของยานพาหนะ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                DropdownButtonFormField<String>(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: 'Colors',
+                                    labelStyle: GoogleFonts.prompt(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (_selectedColors == null ||
+                                        _selectedColors!.isEmpty) {
+                                      return 'กรุณาเลือกสีรถ';
+                                    }
+                                    return null;
+                                  },
+                                  value: _selectedColors,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _selectedColors = newValue;
+                                    });
+                                    print(_selectedColors);
+                                  },
+                                  items: carColors
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'ปีของยานพาหนะ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                DropdownButtonFormField<String>(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: 'Year',
+                                    labelStyle: GoogleFonts.prompt(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (_selectedYear == null ||
+                                        _selectedYear!.isEmpty) {
+                                      return 'กรุณาเลือกปี';
+                                    }
+                                    return null;
+                                  },
+                                  value: _selectedYear,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _selectedYear = newValue;
+                                    });
+                                    print(_selectedYear);
+                                  },
+                                  items: years.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'จังหวัดที่ลงทะเบียน',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                DropdownButtonFormField<String>(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  decoration: InputDecoration(
+                                    labelText: 'provinces',
+                                    labelStyle: GoogleFonts.prompt(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey),
+                                    border: const OutlineInputBorder(),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder:
+                                        const OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (_selectedProvince == null ||
+                                        _selectedProvince!.isEmpty) {
+                                      return 'กรุณาเลือกจังหวัด';
+                                    }
+                                    return null;
+                                  },
+                                  value: _selectedProvince,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      _selectedProvince = newValue;
+                                    });
+                                    print(_selectedProvince);
+                                  },
+                                  items: provinces
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                    ],
+                        const SizedBox(height: 30),
+                        InkWell(
+                          onTap: () => storeData(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: 180,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(30),
+                                  border:
+                                      Border.all(width: 1, color: Colors.grey),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'ถัดไป ',
+                                      style: GoogleFonts.prompt(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.arrow_forward,
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }
@@ -821,19 +990,21 @@ class _informationScreenState extends State<informationScreen> {
         wallet: 0,
         groups: [],
         role: "user_driver");
-    ap.saveUserDataToFirebase(
-      context: context,
-      userModel: userModel,
-      onSuccess: () {
-        ap.saveUserDataToSP().then((value) => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => cardIDScreen(
-                      user: user,
-                    )),
-            (route) => false));
-      },
-      groups: groups.toList(),
-    );
+    if (formKey.currentState!.validate()) {
+      ap.saveUserDataToFirebase(
+        context: context,
+        userModel: userModel,
+        onSuccess: () {
+          ap.saveUserDataToSP().then((value) => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => cardIDScreen(
+                        user: user,
+                      )),
+              (route) => false));
+        },
+        groups: groups.toList(),
+      );
+    }
   }
 }

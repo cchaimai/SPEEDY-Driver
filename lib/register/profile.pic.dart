@@ -249,6 +249,13 @@ class _profilePicDriverState extends State<profilePicDriver> {
                                           shape: BoxShape.rectangle,
                                           borderRadius:
                                               BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.1),
+                                              blurRadius: 10,
+                                            ),
+                                          ],
                                           image: _imageFile == null
                                               ? null
                                               : DecorationImage(
@@ -264,8 +271,42 @@ class _profilePicDriverState extends State<profilePicDriver> {
                             ),
                             const SizedBox(height: 50),
                             InkWell(
-                              onTap: () => _uploadImage(
-                                  _imageFile!), // ใช้ _imageFile แทน file
+                              onTap: () {
+                                if (_imageFile == null) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          "กรุณาอัปโหลดไฟล์",
+                                          style: GoogleFonts.prompt(
+                                            fontSize: 18,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            child: Text(
+                                              "ตกลง",
+                                              style: GoogleFonts.prompt(
+                                                fontSize: 16,
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  _uploadImage(_imageFile!);
+                                }
+                              }, // ใช้ _imageFile แทน file
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [

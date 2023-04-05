@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:speedy/firebase/auth.dart';
+import 'package:speedy/register/regis.dart';
 import 'package:speedy/register/verification.dart';
 import 'package:speedy/test/home.dart';
-import 'package:speedy/test/proflie.dart';
 import '../map.dart';
 import '../widgets/widgets.dart';
 
@@ -250,7 +250,7 @@ class _loginScreenState extends State<loginScreen> {
                               ),
                             ),
                             onPressed: () {
-                              nextScreenReplace(context, const MapScreen());
+                              nextScreenReplace(context, const registerScreen());
                             },
                           ),
                         ],
@@ -285,17 +285,73 @@ class _loginScreenState extends State<loginScreen> {
           nextScreenReplace(context, const verificationScreen());
         } else if (role == 'driver') {
           nextScreenReplace(context, const MapScreen());
-        } else if (role == null) {
-          nextScreenReplace(context, const homeScreen());
         }
 
         formKey.currentState!.reset();
       } on FirebaseAuthException catch (e) {
         // Handle the FirebaseAuthException.
-        Fluttertoast.showToast(msg: 'Failed to register: ${e.message}');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Failed to register: $e',
+                style: GoogleFonts.prompt(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text(
+                    "OK",
+                    style: GoogleFonts.prompt(
+                      fontSize: 16,
+                      color: Colors.green,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       } catch (e) {
         // Handle other exceptions.
-        Fluttertoast.showToast(msg: 'Failed to register: $e');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Failed to register: $e',
+                style: GoogleFonts.prompt(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text(
+                    "OK",
+                    style: GoogleFonts.prompt(
+                      fontSize: 16,
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
     }
   }

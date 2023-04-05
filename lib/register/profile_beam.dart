@@ -10,6 +10,7 @@ import 'package:speedy/help_center.dart';
 import 'package:speedy/map.dart';
 import 'package:speedy/select.dart';
 import 'package:speedy/show_profile.dart';
+import 'package:speedy/test/home.dart';
 import 'package:speedy/widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -207,9 +208,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: const Text("Logout"),
-                            content:
-                                const Text("Are you sure you want to logout?"),
+                            title: Text(
+                              "Logout",
+                              style: GoogleFonts.prompt(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            content: Text(
+                              "Are you sure you want to logout?",
+                              style: GoogleFonts.prompt(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
                             actions: [
                               IconButton(
                                 onPressed: () {
@@ -222,13 +234,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               IconButton(
                                 onPressed: () async {
-                                  // await authService.signOut();
-                                  // // ignore: use_build_context_synchronously
-                                  // Navigator.of(context).pushAndRemoveUntil(
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) =>
-                                  //             const LoginSocial()),
-                                  //     (route) => false);
+                                  await FirebaseAuth.instance.signOut();
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const homeScreen()),
+                                      (route) => false);
                                 },
                                 icon: const Icon(
                                   Icons.done,

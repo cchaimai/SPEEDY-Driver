@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/animation/animation_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:speedy/test/proflie.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../firebase/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -270,8 +269,10 @@ class _registerScreenState extends State<registerScreen> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'กรุณากรอกรหัสผ่าน';
-                                } else if (value.length < 8) {
-                                  return 'รหัสผ่านต้องมีอย่างน้อย 8 ตัว';
+                                } else if (!RegExp(
+                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
+                                    .hasMatch(value)) {
+                                  return 'รหัสผ่านต้องประกอบด้วย a-z, A-Z, และ 0-9 และต้องมีความยาวอย่างน้อย 8 ตัว';
                                 }
                                 return null;
                               },
@@ -420,10 +421,76 @@ class _registerScreenState extends State<registerScreen> {
         formKey.currentState!.reset();
       } on FirebaseAuthException catch (e) {
         // Handle the FirebaseAuthException.
-        Fluttertoast.showToast(msg: 'Failed to register: ${e.message}');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Center(
+                child: Text(
+                  "อีเมล์นี้เคยใช้ไปแล้ว \n กรุณาใช้อีเมล์อื่น",
+                  style: GoogleFonts.prompt(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                    child: Text(
+                      "ตกลง",
+                      style: GoogleFonts.prompt(
+                        fontSize: 18,
+                        color: Colors.green,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
+            );
+          },
+        );
       } catch (e) {
         // Handle other exceptions.
-        Fluttertoast.showToast(msg: 'Failed to register: $e');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Center(
+                child: Text(
+                  'Failed to register: $e',
+                  style: GoogleFonts.prompt(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                    child: Text(
+                      "Ok",
+                      style: GoogleFonts.prompt(
+                        fontSize: 16,
+                        color: Colors.green,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                )
+              ],
+            );
+          },
+        );
       }
     }
   }

@@ -35,11 +35,10 @@ class _homeScreenState extends State<homeScreen> {
     final role = userDoc.data()?['role'];
 
     // Display different screens depending on the user's role
-    if (role == 'user_driver') {
-      nextScreenReplace(context, const verificationScreen());
-    } else if (role == 'driver') {
+     if (FirebaseAuth.instance.currentUser != null) {
       nextScreenReplace(context, const MapScreen());
     }
+    // ถ้าเป็นโรลไดร์เวอร์ และยังไม่ได้เข้าสู่ระบบ
   }
 
   @override
