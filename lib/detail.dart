@@ -6,7 +6,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:speedy/work.dart';
-
 import 'firebase/database_service.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -36,7 +35,6 @@ class _DetailScreenState extends State<DetailScreen> {
     fname = userDocSnapshot.get('firstName');
     carID = userDocSnapshot.get('carID');
     phone = userDocSnapshot.get('phoneNumber');
-    // chat = userDocSnapshot.get('chat');
     dProfile = userDocSnapshot.get('driverProfile');
   }
 
@@ -120,12 +118,6 @@ class _DetailScreenState extends State<DetailScreen> {
                         style: GoogleFonts.prompt(
                             fontSize: 12, fontWeight: FontWeight.w500),
                       ),
-                      // Text(
-                      //   snapshot.data!.docs.singleWhere(
-                      //       (doc) => doc.id == widget.workID)['province'],
-                      //   style: GoogleFonts.prompt(
-                      //       fontSize: 12, fontWeight: FontWeight.w500),
-                      // ),
                     ],
                   ),
                 ),
@@ -339,12 +331,6 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          // String groupId = await DatabaseService(
-                          //         uid: FirebaseAuth.instance.currentUser!.uid)
-                          //     .createGroup(
-                          //         fname,
-                          //         FirebaseAuth.instance.currentUser!.uid,
-                          //         phone);
                           sendGroup().then((value) {
                             sendData(value);
                             Navigator.pushAndRemoveUntil(
@@ -364,22 +350,6 @@ class _DetailScreenState extends State<DetailScreen> {
                               (route) => false,
                             );
                           });
-                          // sendData(groupId);
-                          // Navigator.pushAndRemoveUntil(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => WorkScreen(
-                          //       workID: widget.workID,
-                          //       dlat: snapshot.data!.docs.singleWhere((doc) =>
-                          //           doc.id == widget.workID)['Ulatitude'],
-                          //       dlong: snapshot.data!.docs.singleWhere((doc) =>
-                          //           doc.id == widget.workID)['Ulongitude'],
-                          //       groupId: groupId,
-                          //       phone: phone,
-                          //     ),
-                          //   ),
-                          //   (route) => false,
-                          // );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff3BB54A),

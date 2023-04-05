@@ -86,7 +86,10 @@ class _ChatPageState extends State<ChatPage> {
         ),
         body: Stack(
           children: <Widget>[
-            chatMessages(),
+            SizedBox(
+              height: 613,
+              child: chatMessages(),
+            ),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,

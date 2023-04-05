@@ -159,7 +159,7 @@ class _EndScreenState extends State<EndScreen> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              increaseScore(
+                              increaseWallet(
                                       userId,
                                       (snapshot.data!.docs.singleWhere((doc) =>
                                                   doc.id ==
@@ -200,14 +200,10 @@ class _EndScreenState extends State<EndScreen> {
     );
   }
 
-  Future<void> increaseScore(String userId, int amount) async {
+  Future<void> increaseWallet(String userId, int amount) async {
     final DocumentReference<Map<String, dynamic>> userRef =
         FirebaseFirestore.instance.collection('dUsers').doc(userId);
-    try {
-      await userRef.update({'wallet': FieldValue.increment(amount)});
-    } catch (e) {
-      // ignore: avoid_print
-      print(e);
-    }
+
+    await userRef.update({'wallet': FieldValue.increment(amount)});
   }
 }

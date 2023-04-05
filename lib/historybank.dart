@@ -48,12 +48,6 @@ class _HistoryBankScreenState extends State<HistoryBankScreen> {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.amber,
-                ),
-              );
             }
 
             return Padding(

@@ -198,16 +198,11 @@ class _Add2ScreenState extends State<Add2Screen> {
   );
 
   Future<void> createBank(String name, String account, String image) async {
-    DocumentReference bankDocumentReference =
-        await FirebaseFirestore.instance.collection("banks").add({
+    await FirebaseFirestore.instance.collection("banks").add({
       "owner": userId,
       "name": name,
       "account": account,
       "image": image,
-    });
-
-    await bankDocumentReference.update({
-      "id": bankDocumentReference.id,
     });
   }
 }

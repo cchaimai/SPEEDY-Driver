@@ -177,7 +177,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                       .toDate()),
                                               style: GoogleFonts.prompt()),
                                           subtitle: Text(
-                                              "${DateFormat('HH:mm').format(snapshot.data!.docs[index]['eTimestamp'].toDate())} น.",
+                                              "${DateFormat('dd MMM yy', 'th').format(snapshot.data!.docs[index]['eTimestamp'].toDate())}  ${DateFormat('HH:mm').format(snapshot.data!.docs[index]['eTimestamp'].toDate())} น.",
                                               style: GoogleFonts.prompt()),
                                           trailing: Text(
                                               "+${(snapshot.data!.docs[index]['price'] * 0.85).toStringAsFixed(0)} ฿",

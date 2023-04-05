@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:speedy/select.dart';
 import 'package:speedy/withdraw2.dart';
 
@@ -24,9 +22,8 @@ class WithdrawScreen extends StatefulWidget {
 class _WithdrawScreenState extends State<WithdrawScreen> {
   final fromKey = GlobalKey<FormState>();
   String userId = FirebaseAuth.instance.currentUser!.uid;
-  num? amount;
   bool _isChecked = false;
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +47,8 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
           icon: const Icon(Icons.arrow_back_ios),
         ),
       ),
-      body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('dUsers').snapshots(),
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance.collection('dUsers').get(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return const Center(
@@ -122,10 +119,16 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                           ),
                           Expanded(
                             child: TextFormField(
-                              controller: _textEditingController,
+                              controller: amountController,
                               validator: (value) {
                                 if (value == "0") {
                                   return "กรุณากรอกจำนวนเงิน";
+                                }
+                                double? enterAmount = double.tryParse(value!);
+                                if (enterAmount! >
+                                    snapshot.data!.docs.singleWhere(
+                                        (doc) => doc.id == userId)['wallet']) {
+                                  return "คุณมีจำนวนเงินไม่พอ";
                                 }
                                 return null;
                               },
@@ -163,11 +166,12 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                             setState(() {
                               _isChecked = value!;
                               if (_isChecked) {
-                                amount = snapshot.data!.docs.singleWhere(
-                                    (doc) => doc.id == userId)['wallet'];
-                                _textEditingController.text = amount.toString();
+                                amountController.text = snapshot.data!.docs
+                                    .singleWhere(
+                                        (doc) => doc.id == userId)['wallet']
+                                    .toString();
                               } else {
-                                _textEditingController.text = "";
+                                amountController.text = "";
                               }
                             });
                           },
@@ -187,11 +191,10 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (fromKey.currentState!.validate()) {
-                              fromKey.currentState!.save();
-                              withdraw(userId,
-                                  num.parse(_textEditingController.text));
+                              withdraw(
+                                  userId, num.parse(amountController.text));
                               createBankHistory(widget.account,
-                                  num.parse(_textEditingController.text));
+                                  num.parse(amountController.text));
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
@@ -237,27 +240,18 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
   );
 
   Future<void> createBankHistory(String account, num amount) async {
-    DocumentReference bankHistoryDocumentReference =
-        await FirebaseFirestore.instance.collection("bankhistory").add({
+    await FirebaseFirestore.instance.collection("bankhistory").add({
       "owner": userId,
       "account": account,
       "amount": amount,
       "timestamp": FieldValue.serverTimestamp(),
-    });
-
-    await bankHistoryDocumentReference.update({
-      "id": bankHistoryDocumentReference.id,
     });
   }
 
   Future<void> withdraw(String userId, num points) async {
     final DocumentReference<Map<String, dynamic>> userRef =
         FirebaseFirestore.instance.collection('dUsers').doc(userId);
-    try {
-      await userRef.update({'wallet': FieldValue.increment(-points)});
-    } catch (e) {
-      // ignore: avoid_print
-      print(e);
-    }
+
+    await userRef.update({'wallet': FieldValue.increment(-points)});
   }
 }
