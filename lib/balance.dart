@@ -171,10 +171,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                       children: [
                                         ListTile(
                                           title: Text(
-                                              DateFormat('dd MMM yy', 'th')
-                                                  .format(snapshot.data!
-                                                      .docs[index]['eTimestamp']
-                                                      .toDate()),
+                                              'No.${snapshot.data!.docs[index]['workID']}',
                                               style: GoogleFonts.prompt()),
                                           subtitle: Text(
                                               "${DateFormat('dd MMM yy', 'th').format(snapshot.data!.docs[index]['eTimestamp'].toDate())}  ${DateFormat('HH:mm').format(snapshot.data!.docs[index]['eTimestamp'].toDate())} น.",
