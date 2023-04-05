@@ -79,7 +79,8 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("${widget.account.substring(0, 6)}XXXX",
+                            Text(
+                                "${widget.account.substring(0, widget.account.length - 4)}XXXX",
                                 style: GoogleFonts.prompt(
                                     fontWeight: FontWeight.w500, fontSize: 16)),
                             IconButton(
@@ -121,11 +122,12 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
                             child: TextFormField(
                               controller: amountController,
                               validator: (value) {
+                                double? enterAmount = double.tryParse(value!);
                                 if (value == "0") {
                                   return "กรุณากรอกจำนวนเงิน";
-                                }
-                                double? enterAmount = double.tryParse(value!);
-                                if (enterAmount! >
+                                } else if (amountController.text == '') {
+                                  return "กรุณากรอกจำนวนเงิน";
+                                } else if (enterAmount! >
                                     snapshot.data!.docs.singleWhere(
                                         (doc) => doc.id == userId)['wallet']) {
                                   return "คุณมีจำนวนเงินไม่พอ";

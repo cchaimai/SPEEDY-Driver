@@ -47,6 +47,7 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     currentLocation = await Geolocator.getCurrentPosition();
+
     positionStream = Geolocator.getPositionStream().listen((position) {
       currentLocation = position;
       setState(() {});
