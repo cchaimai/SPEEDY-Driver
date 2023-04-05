@@ -107,9 +107,9 @@ class _EditProfileState extends State<EditProfile> {
     final String driverCardUrl =
         await storeFileDataToStorage("profilePic/$_uid", file);
 
-    await FirebaseFirestore.instance.collection('mUsers').doc(_uid).set(
+    await FirebaseFirestore.instance.collection('dUsers').doc(_uid).set(
         {
-          'profilePic': driverCardUrl,
+          'driverProfile': driverCardUrl,
         },
         SetOptions(
             merge:
@@ -136,6 +136,14 @@ class _EditProfileState extends State<EditProfile> {
           shape: const RoundedRectangleBorder(
               borderRadius:
                   BorderRadius.vertical(bottom: Radius.circular(23.0))),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ShowProfile()),
+                );
+              },
+              icon: const Icon(Icons.arrow_back_ios)),
         ),
         body: Container(
           padding: const EdgeInsets.only(

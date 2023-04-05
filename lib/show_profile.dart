@@ -66,6 +66,14 @@ class _ShowProfileState extends State<ShowProfile> {
         centerTitle: true, //กลาง
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(23.0))),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: Container(
         padding: const EdgeInsets.only(
