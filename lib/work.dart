@@ -206,9 +206,9 @@ class _WorkScreenState extends State<WorkScreen> {
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 10,
-                              offset: Offset.zero)
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                          )
                         ]),
                     height: 90,
                     child: Row(
@@ -364,17 +364,17 @@ class _WorkScreenState extends State<WorkScreen> {
                   bottom: 15,
                   child: ElevatedButton(
                     onPressed: () {
-                      // if (calculateDistance(
-                      //         currentLocation!.latitude!,
-                      //         currentLocation!.longitude!,
-                      //         widget.dlat,
-                      //         widget.dlong) <
-                      //     0.1) {
-                      //   popUb1(context);
-                      // } else {
-                      //   popUb2(context);
-                      // }
-                      popUb1(context);
+                      if (calculateDistance(
+                              currentLocation!.latitude,
+                              currentLocation!.longitude,
+                              widget.dlat,
+                              widget.dlong) <
+                          0.1) {
+                        popUb1(context);
+                      } else {
+                        popUb2(context);
+                      }
+                      //popUb1(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff1f1f1f),
