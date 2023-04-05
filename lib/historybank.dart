@@ -60,7 +60,7 @@ class _HistoryBankScreenState extends State<HistoryBankScreen> {
                       ListTile(
                         title: Text("รายการถอน", style: GoogleFonts.prompt()),
                         subtitle: Text(
-                            "เลขที่บัญชี ${snapshot.data!.docs[index]['account'].substring(0, 6)}XXXX\n${DateFormat('dd MMM yy', 'th').format(snapshot.data!.docs[index]['timestamp'].toDate())}  ${DateFormat('HH:mm').format(snapshot.data!.docs[index]['timestamp'].toDate())} น.",
+                            "เลขที่บัญชี ${snapshot.data!.docs[index]['account'].substring(0, snapshot.data!.docs[index]['account'].length - 4)}XXXX\n${DateFormat('dd MMM yy', 'th').format(snapshot.data!.docs[index]['timestamp'].toDate())}  ${DateFormat('HH:mm').format(snapshot.data!.docs[index]['timestamp'].toDate())} น.",
                             style: GoogleFonts.prompt()),
                         trailing: Text(
                             "-${snapshot.data!.docs[index]['amount']} ฿",
